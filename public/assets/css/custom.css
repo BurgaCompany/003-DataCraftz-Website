@@ -1,0 +1,72 @@
+.profile-image-container {
+    width: 200px; /* Sesuaikan dengan ukuran yang diinginkan */
+    height: 200px; /* Sesuaikan dengan ukuran yang diinginkan */
+    overflow: hidden; /* Menghindari gambar melebihi kontainer */
+    margin: 10px; /* Menambahkan jarak dengan card pinggir */
+}
+
+.profile-image {
+    width: 100%; /* Menyesuaikan lebar gambar dengan kontainer */
+    height: auto; /* Menyesuaikan tinggi gambar dengan kontainer */
+    display: block; /* Menjadikan gambar sebagai blok */
+}
+
+#deleteBtn {
+    display: none;
+}
+
+.match {
+    background-color: #c8e6c9; /* Warna hijau untuk cocok */
+}
+
+.mismatch {
+    background-color: #ffcdd2; /* Warna merah untuk tidak cocok */
+}
+
+.custom-card {
+    position: relative;
+    width: 100%; /* Mengatur lebar kartu agar responsif */
+    max-width: 300px; /* Maksimum lebar kartu */
+    height: 120px;
+    background: #FFFFFF;
+    border: 4px solid #1F1F1F;
+    border-radius: 8px;
+    box-shadow: 14px 14px #FFD700;
+    margin-bottom: 20px; /* Menambahkan margin bawah agar tidak terlalu rapat */
+}
+
+.centered-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%; /* Menyesuaikan tinggi agar konten berada di tengah vertikal */
+}
+.centered-content .icon {
+    margin-right: 10px; /* Jarak antara ikon dan teks */
+    font-size: 24px; /* Ukuran font ikon */
+}
+.centered-content .card-text {
+    font-size: 20px; /* Ukuran font teks */
+}
+
+.form-check-input.checkbox_ids {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    left: 0; /* Mengubah posisi kiri menjadi 0 */
+    width: 24px; /* Ubah ukuran sesuai kebutuhan */
+    height: 24px; /* Ubah ukuran sesuai kebutuhan */
+    margin-top: -12px; /* Setengah dari height untuk memusatkan secara vertikal */
+}
+
+
+  
+  
+  
+  
+.avatar {
+    width: 40px; /* Sesuaikan dengan ukuran yang Anda inginkan */
+    height: 40px; /* Sesuaikan dengan ukuran yang Anda inginkan */
+    border-radius: 50%; /* Membuat gambar menjadi lingkaran */
+    object-fit: cover; /* Memastikan gambar tidak terdistorsi */
+}
