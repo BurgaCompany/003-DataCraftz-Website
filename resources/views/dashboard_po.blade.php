@@ -4,7 +4,8 @@
     <div class="lime-body">
         <div class="container">
             <div class="row">
-                <div class="col-md-8">
+                
+                <div class="col-md-12">
                     <div class="card bg-info text-white">
                         <div class="card-body">
                             <div class="dashboard-info row">
