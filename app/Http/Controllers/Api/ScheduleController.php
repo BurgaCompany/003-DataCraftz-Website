@@ -39,95 +39,101 @@ class ScheduleController extends Controller
     }
 
     public function reserveTicket(Request $request)
-    {
-        try {
-            // Validate the request
-            $validator = Validator::make($request->all(), [
-                'schedule_id' => 'required|exists:schedules,id',
-                'tickets_booked' => 'required|integer|min:1',
-            ]);
+{
+    try {
+        // Validate the request
+        $validator = Validator::make($request->all(), [
+            'schedule_id' => 'required|exists:schedules,id',
+            'tickets_booked' => 'required|integer|min:1',
+        ]);
 
-            if ($validator->fails()) {
-                return $this->responseFormatter->setStatusCode(400)
-                    ->setMessage('Validation Error!')
-                    ->setResult(['error' => $validator->errors()])
-                    ->format();
-            }
-
-            $user = auth('api')->user();
-
-            if (!$user) {
-                return $this->responseFormatter->setStatusCode(401)
-                    ->setMessage('Unauthenticated')
-                    ->setResult(['error' => 'Unauthenticated'])
-                    ->format();
-            }
-
-            // Find the schedule by schedule_id
-            $schedule = Schedule::find($request->input('schedule_id'));
-
-            if (!$schedule) {
-                return $this->responseFormatter->setStatusCode(404)
-                    ->setMessage('Schedule Not Found')
-                    ->setResult(['error' => 'Schedule not found'])
-                    ->format();
-            }
-
-            // Find the bus associated with the schedule
-            $bus = Buss::find($schedule->bus_id);
-
-            if (!$bus) {
-                return $this->responseFormatter->setStatusCode(404)
-                    ->setMessage('Bus Not Found')
-                    ->setResult(['error' => 'Bus not found'])
-                    ->format();
-            }
-
-            // Check if there are enough chairs available
-            if ($bus->chair < $request->tickets_booked) {
-                return $this->responseFormatter->setStatusCode(400)
-                    ->setMessage('Not Enough Chairs Available')
-                    ->setResult(['error' => 'Not enough chairs available'])
-                    ->format();
-            }
-
-            // Check if there is an existing reservation for the user and schedule
-            $reservation = Reservation::where('user_id', $user->id)
-                ->where('schedule_id', $schedule->id)
-                ->where('status', 1)
-                ->first();
-
-            if ($reservation) {
-                // If there is, add the booked tickets to the existing reservation
-                $reservation->tickets_booked += $request->tickets_booked;
-                $reservation->save();
-            } else {
-                // If not, create a new reservation
-                $reservation = Reservation::create([
-                    'user_id' => $user->id,
-                    'bus_id' => $bus->id,
-                    'schedule_id' => $schedule->id,
-                    'tickets_booked' => $request->tickets_booked,
-                    'date_departure' => $request->departure_date,
-                    'status' => 1, // Status 1: reserved
-                ]);
-            }
-
-            // Decrease the number of chairs available in the bus
-            $bus->chair -= $request->tickets_booked;
-            $bus->save();
-
-            return $this->responseFormatter->setStatusCode(201)
-                ->setMessage('Reservation Successful!')
-                ->setResult(['reservation' => $reservation])
-                ->format();
-        } catch (\Exception $e) {
-            return $this->responseFormatter->setStatusCode(500)
-                ->setMessage('Error!')
-                ->setResult(['error' => $e->getMessage()])
+        if ($validator->fails()) {
+            return $this->responseFormatter->setStatusCode(400)
+                ->setMessage('Validation Error!')
+                ->setResult(['error' => $validator->errors()])
                 ->format();
         }
+
+        $user = auth('api')->user();
+
+        if (!$user) {
+            return $this->responseFormatter->setStatusCode(401)
+                ->setMessage('Unauthenticated')
+                ->setResult(['error' => 'Unauthenticated'])
+                ->format();
+        }
+
+        // Find the schedule by schedule_id
+        $schedule = Schedule::find($request->input('schedule_id'));
+
+        if (!$schedule) {
+            return $this->responseFormatter->setStatusCode(404)
+                ->setMessage('Schedule Not Found')
+                ->setResult(['error' => 'Schedule not found'])
+                ->format();
+        }
+
+        // Find the bus associated with the schedule
+        $bus = Buss::find($schedule->bus_id);
+
+        if (!$bus) {
+            return $this->responseFormatter->setStatusCode(404)
+                ->setMessage('Bus Not Found')
+                ->setResult(['error' => 'Bus not found'])
+                ->format();
+        }
+
+        // Check if there are enough chairs available
+        if ($bus->chair < $request->tickets_booked) {
+            return $this->responseFormatter->setStatusCode(400)
+                ->setMessage('Not Enough Chairs Available')
+                ->setResult(['error' => 'Not enough chairs available'])
+                ->format();
+        }
+
+        // Check if there is an existing reservation for the user and schedule
+        $reservation = Reservation::where('user_id', $user->id)
+            ->where('schedule_id', $schedule->id)
+            ->where('status', 1)
+            ->first();
+
+        if ($reservation) {
+            // If there is, add the booked tickets to the existing reservation
+            $reservation->tickets_booked += $request->tickets_booked;
+            $reservation->save();
+        } else {
+            // If not, create a new reservation
+            $reservation = Reservation::create([
+                'user_id' => $user->id,
+                'bus_id' => $bus->id,
+                'schedule_id' => $schedule->id,
+                'tickets_booked' => $request->tickets_booked,
+                'date_departure' => $request->departure_date,
+                'status' => 1, // Status 1: reserved
+            ]);
+        }
+
+        // Decrease the number of chairs available in the bus
+        $bus->chair -= $request->tickets_booked;
+        $bus->save();
+
+        // Load the user's name
+        $reservation->load('user');
+
+        return $this->responseFormatter->setStatusCode(201)
+            ->setMessage('Reservation Successful!')
+            ->setResult([
+                'reservation' => $reservation,
+                'user_name' => $reservation->user->name,
+            ])
+            ->format();
+    } catch (\Exception $e) {
+        return $this->responseFormatter->setStatusCode(500)
+            ->setMessage('Error!')
+            ->setResult(['error' => $e->getMessage()])
+            ->format();
     }
+}
 
     public function updateReserveTicket(Request $request)
     {
