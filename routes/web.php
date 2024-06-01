@@ -25,9 +25,9 @@ Route::post('/login', [LoginController::class, 'login'])->name('login.submit');
 Route::get('/dashboard', [DashboardController::class, 'index'])->middleware('role:Upt|Admin')->name('dashboard');
 Route::get('/dashboard_po', [DashboardPoController::class, 'index'])->middleware('role:PO')->name('dashboard_po');
 
-Route::get('/profile', [ProfileController::class, 'show'])->middleware('role:Root|Upt|Admin')->name('profile');
-Route::post('/profile/update-image', [ProfileController::class, 'updateImage'])->middleware('role:Root|Upt|Admin')->name('profile.update-image');
-Route::put('/profile/update/{id}', [ProfileController::class, 'update'])->middleware('role:Root|Upt|Admin')->name('profile.update');
+Route::get('/profile', [ProfileController::class, 'show'])->middleware('role:Root|Upt|Admin|PO')->name('profile');
+Route::post('/profile/update-image', [ProfileController::class, 'updateImage'])->middleware('role:Root|Upt|Admin|PO')->name('profile.update-image');
+Route::put('/profile/update/{id}', [ProfileController::class, 'update'])->middleware('role:Root|Upt|Admin|PO')->name('profile.update');
 
 
 
