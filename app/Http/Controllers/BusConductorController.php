@@ -18,13 +18,22 @@ class BusConductorController extends Controller
         if (Auth::check()) {
             // Ambil peran pengguna yang masuk
             $user = Auth::user();
-            // Periksa apakah pengguna memiliki peran Upt atau Admin
-            if ($user->hasRole('Upt') || $user->hasRole('Admin')) {
+            // Periksa apakah pengguna memiliki peran PO atau Admin
+            if ($user->hasRole('PO') || $user->hasRole('Admin')) {
                 // Tentukan ID Upt yang akan digunakan dalam kueri
+                $poId = $user->hasRole('PO') ? $user->id : null;
 
-                $uptId = $user->hasRole('Upt') ? $user->id : ($user->hasRole('Admin') ? $user->id_upt : null);
+                // Ambil data pengguna dengan peran Driver terkait dengan Upt yang sesuai
+                $conductorQuery = User::role('Bus_Conductor');
 
-                $bus_conductors = User::role('Bus_Conductor')->where('id_upt', $uptId)->paginate(15);
+                // Tambahkan kondisi id_po jika pengguna adalah PO
+                if ($user->hasRole('PO')) {
+                    $conductorQuery->where('id_po', $poId);
+                }
+
+                $bus_conductors = $conductorQuery->paginate(15);
+
+                // Kembalikan tampilan dengan data pengguna (drivers)
                 return view('bus_conductors.index', compact('bus_conductors'));
             }
         }
@@ -35,20 +44,24 @@ class BusConductorController extends Controller
 
     public function search(Request $request)
     {
-        $userId = Auth::id();
         $user = Auth::user(); // Mendapatkan objek pengguna yang sedang login
 
         // Tentukan id_upt berdasarkan peran pengguna
-        $uptId = $user->hasRole('Upt') ? $user->id : ($user->hasRole('Admin') ? $user->id_upt : null);
+        $poId = $user->hasRole('PO') ? $user->id : null;
+
         $searchTerm = $request->input('search');
 
-        $bus_conductors = User::role('Bus_Conductor')
-            ->where('id_upt', $uptId) // Tambahkan kondisi untuk memeriksa id_upt
-            ->where(function ($query) use ($searchTerm) {
-                $query->where('name', 'like', '%' . $searchTerm . '%')
-                    ->orWhere('address', 'like', '%' . $searchTerm . '%');
-            })
-            ->paginate(15);
+        $conductorQuery = User::role('Bus_Conductor');
+
+        // Tambahkan kondisi untuk memeriksa id_upt jika pengguna memiliki peran Upt
+        if ($user->hasRole('PO')) {
+            $conductorQuery->where('id_po', $poId);
+        }
+
+        $bus_conductors = $conductorQuery->where(function ($query) use ($searchTerm) {
+            $query->where('name', 'like', '%' . $searchTerm . '%')
+                ->orWhere('address', 'like', '%' . $searchTerm . '%');
+        })->paginate(15);
 
         return view('bus_conductors.index', compact('bus_conductors'));
     }
@@ -121,7 +134,7 @@ class BusConductorController extends Controller
             'gender' => $request->gender,
             'phone_number' => $request->phone_number,
             'images' => $imageName,
-            'id_upt' => $userId, // Menambahkan id_upt dari pengguna yang sedang masuk
+            'id_po' => $userId, // Menambahkan id_upt dari pengguna yang sedang masuk
             'created_at' => Carbon::now(),
         ]);
 
@@ -150,7 +163,7 @@ class BusConductorController extends Controller
         }
 
         // Periksa apakah ID pengguna yang sedang login sama dengan id_upt dari admin
-        if ($userId != $bus_conductor->id_upt) {
+        if ($userId != $bus_conductor->id_po) {
             // Jika tidak sama, redirect atau tampilkan pesan error
             return redirect()->route('drivers.index')->with('error', 'Anda tidak memiliki izin untuk mengakses halaman ini.');
         }
@@ -173,13 +186,13 @@ class BusConductorController extends Controller
         // Periksa apakah pengguna memiliki peran 'Driver'
         if (!$bus_conductor->hasRole('Bus_Conductor')) {
             // Jika pengguna bukan seorang 'Driver', redirect atau tampilkan pesan error
-            return redirect()->route('drivers.index')->with('error', 'Pengguna ini bukan seorang Driver.');
+            return redirect()->route('bus_conductors.index')->with('error', 'Pengguna ini bukan seorang Driver.');
         }
 
         // Periksa apakah ID pengguna yang sedang login sama dengan id_upt dari admin
-        if ($userId != $bus_conductor->id_upt) {
+        if ($userId != $bus_conductor->id_po) {
             // Jika tidak sama, redirect atau tampilkan pesan error
-            return redirect()->route('drivers.index')->with('error', 'Anda tidak memiliki izin untuk mengakses halaman ini.');
+            return redirect()->route('bus_conductors.index')->with('error', 'Anda tidak memiliki izin untuk mengakses halaman ini.');
         }
         $roles = Role::all();
         $genders = [

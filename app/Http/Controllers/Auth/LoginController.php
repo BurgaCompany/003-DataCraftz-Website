@@ -20,18 +20,22 @@ class LoginController extends Controller
      */
     public function showLoginForm()
     {
+        // Check if the user is already authenticated
         if (Auth::check()) {
-            // Jika pengguna sudah terotentikasi, arahkan mereka ke dashboard
+            // If the user is authenticated, redirect them based on their role
             if (Auth::user()->hasRole('Root')) {
                 return redirect()->route('upts.index');
-            } elseif (Auth::user()->hasAnyRole(['Upt', 'Admin', 'PO'])) {
+            } elseif (Auth::user()->hasAnyRole(['Upt', 'Admin'])) {
                 return redirect()->route('dashboard');
+            } elseif (Auth::user()->hasRole('PO')) {
+                return redirect()->route('dashboard_po');
             }
         }
 
-        // Jika belum terotentikasi, tampilkan halaman login
+        // If the user is not authenticated, show the login form
         return view('auth.login');
     }
+
 
     /**
      * Handle an authentication attempt.
@@ -52,9 +56,12 @@ class LoginController extends Controller
             if ($user->hasRole('Root')) {
                 // Jika peran pengguna adalah 'root', tampilkan halaman read upt
                 return redirect()->route('upts.index');
-            } elseif ($user->hasAnyRole(['Upt', 'Admin', 'PO'])) {
+            } elseif ($user->hasAnyRole(['Upt', 'Admin'])) {
                 // Jika peran pengguna adalah 'upt', tampilkan full dashboard
                 return redirect()->route('dashboard');
+            } elseif ($user->hasRole(['PO'])) {
+                // Jika peran pengguna adalah 'upt', tampilkan full dashboard
+                return redirect()->route('dashboard_po');
             }
         }
 

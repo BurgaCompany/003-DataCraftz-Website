@@ -23,16 +23,10 @@
             <td>{{ $bus->chair }}</td>
             <td>{{ preg_replace('/([a-zA-Z])([0-9]+)/', '$1 $2 ', $bus->license_plate_number) }}</td>
             <td>{{ $bus->class }}</td>
-            <td>{{ $bus->information }}</td>
+            <td>{{ $bus->information ?: '-' }}</td>
             <td>{{ $bus->driver_name ?: '-'}}</td>
             <td>{{ $bus->conductor_name ?: '-'}}</td>
-            <td>
-                <div class="btn-group" role="group" aria-label="Basic example">
-                    <a href="{{ route('busses.detail', $bus->id) }}" class="btn btn-warning" data-toggle="tooltip" data-placement="top" title="Detail">
-                        <i class="fas fa-eye"></i>
-                    </a>
-                </div>
-            </td>
+            <td>{{ $bus->po->name }}</td>
         </tr>
     @endforeach
 @endif

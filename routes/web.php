@@ -9,6 +9,7 @@ use App\Http\Controllers\BussesController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\UptController;
 use App\Http\Controllers\BusStationController;
+use App\Http\Controllers\DashboardPoController;
 use App\Http\Controllers\DriverController;
 use App\Http\Controllers\LandingController;
 use App\Http\Controllers\OtobusController;
@@ -21,7 +22,8 @@ Route::get('/', [LandingController::class, 'index'])->name('landing');
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [LoginController::class, 'login'])->name('login.submit');
 
-Route::get('/dashboard', [DashboardController::class, 'index'])->middleware('role:Upt|Admin|PO')->name('dashboard');
+Route::get('/dashboard', [DashboardController::class, 'index'])->middleware('role:Upt|Admin')->name('dashboard');
+Route::get('/dashboard_po', [DashboardPoController::class, 'index'])->middleware('role:PO')->name('dashboard_po');
 
 Route::get('/profile', [ProfileController::class, 'show'])->middleware('role:Root|Upt|Admin')->name('profile');
 Route::post('/profile/update-image', [ProfileController::class, 'updateImage'])->middleware('role:Root|Upt|Admin')->name('profile.update-image');
@@ -48,17 +50,6 @@ Route::middleware(['role:PO'])->group(function () {
     Route::get('/busses/create', [BussesController::class, 'create'])->name('busses.create');
     Route::post('/busses', [BussesController::class, 'store'])->name('busses.store');
     Route::post('/busses/delete', [BussesController::class, 'destroyMulti'])->name('busses.destroy.multi');
-});
-
-
-Route::middleware(['role:Root|Upt|Admin'])->group(function () {
-    Route::get('/schedules', [ScheduleController::class, 'index'])->name('schedules.index');
-    Route::get('/schedules/{id}/detail', [ScheduleController::class, 'detail'])->name('schedules.detail');
-    Route::get('/schedules/search', [ScheduleController::class, 'search'])->name('schedules.search');
-});
-
-
-Route::middleware(['role:PO|Admin'])->group(function () {
 
     Route::get('/drivers', [DriverController::class, 'index'])->name('drivers.index');
     Route::get('/drivers/search', [DriverController::class, 'search'])->name('drivers.search');
@@ -75,6 +66,14 @@ Route::middleware(['role:PO|Admin'])->group(function () {
     Route::put('/busses/{id}', [BussesController::class, 'update'])->name('busses.update');
     Route::get('/busses/filter', [BussesController::class, 'filter'])->name('busses.filter');
 });
+
+
+Route::middleware(['role:Root|Upt|Admin|PO'])->group(function () {
+    Route::get('/schedules', [ScheduleController::class, 'index'])->name('schedules.index');
+    Route::get('/schedules/{id}/detail', [ScheduleController::class, 'detail'])->name('schedules.detail');
+    Route::get('/schedules/search', [ScheduleController::class, 'search'])->name('schedules.search');
+});
+
 
 Route::middleware(['role:Root'])->group(function () {
     Route::get('/upts', [UptController::class, 'index'])->name('upts.index');
@@ -103,8 +102,6 @@ Route::middleware(['role:Root'])->group(function () {
     Route::post('/schedules/delete', [ScheduleController::class, 'destroyMulti'])->name('schedules.destroy.multi');
 });
 
-Route::middleware(['role:Root|Upt|Admin'])->group(function () {
-});
 
 Route::middleware(['role:Upt'])->group(function () {
     //route for admins

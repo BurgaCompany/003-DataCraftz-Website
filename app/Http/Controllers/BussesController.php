@@ -26,12 +26,13 @@ class BussesController extends Controller
         if (Auth::check()) {
             // Ambil peran pengguna yang masuk
             $user = Auth::user();
-            // Periksa apakah pengguna memiliki peran Upt atau Admin
-            if ($user->hasRole('Upt') || $user->hasRole('Admin')) {
-                // Tentukan ID Upt yang akan digunakan dalam kueri
-                $uptId = $user->hasRole('Upt') ? $user->id : ($user->hasRole('Admin') ? $user->id_upt : null);
+            // Periksa apakah pengguna memiliki peran PO atau Admin
+            if ($user->hasRole('PO') || $user->hasRole('Admin')) {
+                // Tentukan ID pengguna yang akan digunakan dalam kueri
+                $userId = $user->id;
 
-                $busses = DB::table('busses')
+                // Mulai membangun kueri untuk mendapatkan busses
+                $bussesQuery = DB::table('busses')
                     ->leftJoin('driver_conductor_bus', 'busses.id', '=', 'driver_conductor_bus.bus_id')
                     ->leftJoin('users as drivers', 'driver_conductor_bus.driver_id', '=', 'drivers.id')
                     ->leftJoin('users as conductors', 'driver_conductor_bus.bus_conductor_id', '=', 'conductors.id')
@@ -39,10 +40,15 @@ class BussesController extends Controller
                         'busses.*',
                         'drivers.name as driver_name',
                         'conductors.name as conductor_name'
-                    )
-                    ->where('busses.id_upt', $uptId) // Menambahkan kondisi untuk ID Upt
-                    ->orderBy('busses.id', 'asc') // Mengatur urutan berdasarkan ID secara ascending
-                    ->paginate(15);
+                    );
+
+                // Tambahkan kondisi where id_po jika pengguna memiliki peran PO
+                if ($user->hasRole('PO')) {
+                    $bussesQuery->where('busses.id_po', $userId);
+                }
+
+                // Tambahkan pengurutan dan paginasi
+                $busses = $bussesQuery->orderBy('busses.id', 'asc')->paginate(15);
 
                 // Mengembalikan data tersebut ke view
                 return view('busses.index', compact('busses'));
@@ -58,9 +64,8 @@ class BussesController extends Controller
             // Ambil peran pengguna yang masuk
             $user = Auth::user();
             // Periksa apakah pengguna memiliki peran Upt atau Admin
-            if ($user->hasRole('Upt') || $user->hasRole('Admin')) {
+            if ($user->hasRole('PO') || $user->hasRole('Admin')) {
                 // Tentukan ID Upt yang akan digunakan dalam kueri
-                $uptId = $user->hasRole('Upt') ? $user->id : ($user->hasRole('Admin') ? $user->id_upt : null);
 
                 $searchTerm = $request->input('search');
 
@@ -68,7 +73,6 @@ class BussesController extends Controller
                     $query->where('name', 'like', '%' . $searchTerm . '%')
                         ->orWhere('license_plate_number', 'like', '%' . $searchTerm . '%');
                 })
-                    ->where('id_upt', $uptId) // Menambahkan kondisi id_upt
                     ->paginate(15);
 
                 return view('busses.index', compact('busses'));
@@ -83,13 +87,13 @@ class BussesController extends Controller
         // Fetch all admins who have the role 'Admin' and meet certain conditions
         $drivers = User::role('Driver')
             ->whereDoesntHave('driverBus')
-            ->where('id_upt', $userId)
+            ->where('id_po', $userId)
             ->get();
 
         // Fetch all admins who have the role 'Admin' and meet certain conditions
         $bus_conductors = User::role('Bus_Conductor')
             ->whereDoesntHave('ConductorBus')
-            ->where('id_upt', $userId)
+            ->where('id_po', $userId)
             ->get();
 
         // Pass the fetched data to the view
@@ -165,7 +169,7 @@ class BussesController extends Controller
             'status' => $request->status, // Menambahkan status dari formulir
             'information' => $request->status == 4 ? $request->keterangan : null, // Menambahkan keterangan jika status adalah 4 (Terkendala)
             'images' => $imageName,
-            'id_upt' => $userId, // Menambahkan id_upt dari pengguna yang sedang masuk
+            'id_po' => $userId, // Menambahkan id_upt dari pengguna yang sedang masuk
             'created_at' => Carbon::now(),
         ]);
 
@@ -194,15 +198,16 @@ class BussesController extends Controller
     public function detail($id)
     {
         $user = Auth::user();
-        $userId = $user->hasRole('Upt') ? $user->id : ($user->hasRole('Admin') ? $user->id_upt : null);
+        $userId = $user->id;
 
         $bus = Buss::findOrFail($id);
 
         // Periksa apakah ID pengguna yang sedang login sama dengan id_upt dari bus
-        if ($userId != $bus->id_upt) {
+        if ($user->hasRole('PO') && $userId != $bus->id_po) {
             // Jika tidak sama, redirect atau tampilkan pesan error
             return redirect()->route('busses.index')->with('error', 'Anda tidak memiliki izin untuk mengakses halaman ini.');
         }
+
         $driveconduc = DriverConductorBus::where('bus_id', $bus->id)->get();
 
         //dd($driveconduc);
@@ -210,23 +215,35 @@ class BussesController extends Controller
         $assignedBusConductors = $driveconduc->pluck('bus_conductor_id')->toArray();
         //dd($assignedBusConductors);
 
-        $drivers = User::role('Driver')
+        // Retrieve drivers based on user role
+        $driversQuery = User::role('Driver')
             ->where(function ($query) use ($bus) {
                 $query->whereHas('driverBus', function ($query) use ($bus) {
                     $query->where('bus_id', $bus->id);
                 })->orWhereDoesntHave('driverBus');
-            })
-            ->where('id_upt', $userId)
-            ->get();
+            });
 
-        $bus_conductors = User::role('Bus_Conductor')
+        // Add additional condition if the user is not an Admin
+        if (!$user->hasRole('Admin')) {
+            $driversQuery->where('id_po', $userId);
+        }
+
+        $drivers = $driversQuery->get();
+
+        // Retrieve bus conductors based on user role
+        $busConductorsQuery = User::role('Bus_Conductor')
             ->where(function ($query) use ($bus) {
                 $query->whereHas('ConductorBus', function ($query) use ($bus) {
                     $query->where('bus_id', $bus->id);
                 })->orWhereDoesntHave('ConductorBus');
-            })
-            ->where('id_upt', $userId)
-            ->get();
+            });
+
+        // Add additional condition if the user is not an Admin
+        if (!$user->hasRole('Admin')) {
+            $busConductorsQuery->where('id_po', $userId);
+        }
+
+        $bus_conductors = $busConductorsQuery->get();
 
         return view('busses.detail', [
             'bus' => $bus,
@@ -237,15 +254,16 @@ class BussesController extends Controller
         ]);
     }
 
+
     public function edit($id)
     {
         $user = Auth::user();
-        $userId = $user->hasRole('Upt') ? $user->id : ($user->hasRole('Admin') ? $user->id_upt : null);
+        $userId = $user->hasRole('PO') ? $user->id : ($user->hasRole('Admin') ? $user->id_po : null);
 
         $bus = Buss::findOrFail($id);
 
         // Periksa apakah ID pengguna yang sedang login sama dengan id_upt dari bus
-        if ($userId != $bus->id_upt) {
+        if ($userId != $bus->id_po) {
             // Jika tidak sama, redirect atau tampilkan pesan error
             return redirect()->route('busses.index')->with('error', 'Anda tidak memiliki izin untuk mengakses halaman ini.');
         }
@@ -263,7 +281,7 @@ class BussesController extends Controller
                     $query->where('bus_id', $bus->id);
                 })->orWhereDoesntHave('driverBus');
             })
-            ->where('id_upt', $userId)
+            ->where('id_po', $userId)
             ->get();
 
         $bus_conductors = User::role('Bus_Conductor')
@@ -272,7 +290,7 @@ class BussesController extends Controller
                     $query->where('bus_id', $bus->id);
                 })->orWhereDoesntHave('ConductorBus');
             })
-            ->where('id_upt', $userId)
+            ->where('id_po', $userId)
             ->get();
 
         return view('busses.edit', compact('bus', 'drivers', 'bus_conductors', 'assignedDrivers', 'assignedBusConductors'));

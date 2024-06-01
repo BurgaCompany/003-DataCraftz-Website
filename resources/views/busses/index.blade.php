@@ -26,7 +26,7 @@
                                     <a href="{{ route('busses.index') }}" id="refreshPage" class="btn btn-outline-info mr-2" data-toggle="tooltip" data-placement="top" title="Segarkan">
                                         <i class="fas fa-sync-alt mr-1"></i>
                                     </a>
-                                    @if (Auth::user()->hasRole('Upt'))
+                                    @if (Auth::user()->hasRole('PO'))
                                     <a href="{{ route('busses.create') }}" class="btn btn-outline-success mr-2" data-toggle="tooltip" data-placement="top" title="Tambah">
                                         <i class="fas fa-plus"></i>
                                     </a>

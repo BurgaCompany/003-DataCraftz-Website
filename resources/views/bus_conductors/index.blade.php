@@ -26,7 +26,7 @@
                                     <a href="{{ route('bus_conductors.index') }}" id="refreshPage" class="btn btn-outline-info mr-2" data-toggle="tooltip" data-placement="top" title="Segarkan">
                                         <i class="fas fa-sync-alt mr-1"></i>
                                     </a>
-                                    @if (Auth::user()->hasRole('Upt'))
+                                    @if (Auth::user()->hasRole('PO'))
                                     <a href="{{ route('bus_conductors.create') }}" class="btn btn-outline-success mr-2" data-toggle="tooltip" data-placement="top" title="Tambah">
                                         <i class="fas fa-plus"></i>
                                     </a>
@@ -100,7 +100,7 @@
                                                     <i class="fas fa-eye"></i>
                                                 </a>
                                             </div>
-                                            @if (Auth::user()->hasRole('Upt'))
+                                            @if (Auth::user()->hasRole('PO'))
                                             <div class="btn-group" role="group" aria-label="Basic example">
                                                 <a href="{{ route('bus_conductors.edit', $bus_conductor->id) }}" class="btn btn-primary" data-toggle="tooltip" data-placement="top" title="Ubah">
                                                     <i class="fas fa-edit"></i>

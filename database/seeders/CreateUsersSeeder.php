@@ -41,6 +41,18 @@ class CreateUsersSeeder extends Seeder
             'created_at' => now(),
         ]);
 
+        // UPT PELAYANAN SOSIAL LANJUT USI JEMBER
+        DB::table('users')->insert([
+            'name' => 'PO Haryanto',
+            'email' => 'po_haryanto@gmail.com', // Ubah email agar unik
+            'password' => bcrypt('password1234'),
+            'address' => 'Jember Address',
+            'gender' => 'female',
+            'phone_number' => '089803212945',
+            'images' => 'avatars/female.jpg',
+            'created_at' => now(),
+        ]);
+
         // // UPT Pengelolaan Prasarana Perhubungan PASURUAN
         // DB::table('users')->insert([
         //     'name' => 'UPT Pengelolaan Prasarana Perhubungan PASURUAN',

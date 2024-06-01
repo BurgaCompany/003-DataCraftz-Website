@@ -25,32 +25,24 @@
                         </div>
                     </div>
                 </div>
-                @if (Auth::user()->hasAnyRole(['Upt', 'Admin']))
-                <div class="col-md-4">
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title">Grafik Pemesanan Bus</h5>
-                            <canvas id="reservationsChart" width="400" height="200"></canvas>
-                        </div>
-                    </div>
-                </div>
-                @endif
+
+              
+               
+        
 
             </div>
             
-            
-            @if (Auth::user()->hasRole('Upt'))
             <div class="row">
                 <div class="col-md-4">
-                    <a href="{{ route('admins.index') }}">
+                    <a href="{{ route('drivers.index') }}">
                         <div class="card stat-card">
                             <div class="card-body">
                                 <div class="d-flex justify-content-between align-items-center">
-                                    <h5 class="card-title"><i class="fas fa-user-shield fa-lg mr-2"></i>Total Admin</h5>
+                                    <h5 class="card-title"><i class="fas fa-user-shield fa-lg mr-2"></i>Total Sopir</h5>
                                 </div>
-                                <h2 class="float-right">{{ $totalAdmins }}</h2>
+                                <h2 class="float-right">{{ $totalDriver }}</h2>
                                 <div class="progress" style="height: 10px;">
-                                    <div class="progress-bar bg-warning" role="progressbar" style="width: {{ $totalAdmins }}%" aria-valuenow="{{ $totalAdmins }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                    <div class="progress-bar bg-warning" role="progressbar" style="width: {{ $totalDriver }}%" aria-valuenow="{{ $totalDriver }}" aria-valuemin="0" aria-valuemax="100"></div>
                                 </div>
                             </div>
                         </div>
@@ -61,11 +53,11 @@
                         <div class="card stat-card">
                             <div class="card-body">
                                 <div class="d-flex justify-content-between align-items-center">
-                                    <h5 class="card-title"> <i class="fas fa-bus-alt fa-lg mr-2"></i>Total Terminal</h5>
+                                    <h5 class="card-title"> <i class="fas fa-bus-alt fa-lg mr-2"></i>Total Kondektur Bus</h5>
                                 </div>
-                                <h2 class="float-right">{{ $totalBusStations }}</h2>
+                                <h2 class="float-right">{{ $totalConductor }}</h2>
                                 <div class="progress" style="height: 10px;">
-                                    <div class="progress-bar bg-warning" role="progressbar" style="width: {{ $totalBusStations }}%" aria-valuenow="{{ $totalBusStations }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                    <div class="progress-bar bg-warning" role="progressbar" style="width: {{ $totalConductor }}%" aria-valuenow="{{ $totalConductor }}" aria-valuemin="0" aria-valuemax="100"></div>
                                 </div>
                             </div>
                         </div>
@@ -87,7 +79,8 @@
                     </a>
                 </div>
             </div>
-            @endif
+            
+           
             
             <div class="row">
                 <div class="col-md-12">
@@ -124,7 +117,7 @@
                                             <th>Informasi</th>
                                             <th>Sopir</th>
                                             <th>Kondektur</th>
-                                            <th>Perusahaan Otobus</th>
+                                            <th>Aksi</th>
                                         </tr>
                                     </thead>
                                     <tbody id="busTableBody">

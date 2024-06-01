@@ -34,6 +34,13 @@ class AssignPermissionsSeeder extends Seeder
             $user->assignRole($uptRole);
         });
 
+        $otobus = User::whereIn('id', [3])->get();
+
+        $otobusRole = Role::where('name', 'PO')->first();
+        $otobus->each(function ($user) use ($otobusRole) {
+            $user->assignRole($otobusRole);
+        });
+
         // // Assign role 'Admin' to 30 users from each 'id_upt'
         // for ($id_upt = 2; $id_upt <= 4; $id_upt++) {
         //     $users = User::where('id_upt', $id_upt)->take(30)->get();

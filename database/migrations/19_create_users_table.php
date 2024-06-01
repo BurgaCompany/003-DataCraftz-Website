@@ -23,9 +23,11 @@ return new class extends Migration
             $table->string('phone_number')->nullable(false);
             $table->string('images')->default('default.jpg')->nullable(false);
             $table->unsignedBigInteger('id_upt')->nullable();
+            $table->unsignedBigInteger('id_po')->nullable();
             $table->timestamps();
 
             $table->foreign('id_upt')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('id_po')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

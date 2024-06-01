@@ -21,12 +21,17 @@ class Buss extends Model
         'status',
         'information',
         'images',
-        'id_upt',
+        'id_po',
     ];
 
     public function upt()
     {
         return $this->belongsTo(User::class, 'id_upt');
+    }
+
+    public function po()
+    {
+        return $this->belongsTo(User::class, 'id_po');
     }
 
     public function driveconduc()

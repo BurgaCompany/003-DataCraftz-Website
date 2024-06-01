@@ -54,7 +54,9 @@
                         <span class="material-design-hamburger__layer"></span>
                     </a>
                 </section>
-                <a class="navbar-brand" href="{{ Auth::user()->hasRole('Root') ? route('upts.index') : route('dashboard') }}">Transgo</a>
+                <a class="navbar-brand" href="{{ Auth::check() && Auth::user()->hasRole('Root') ? route('upts.index') : (Auth::check() && Auth::user()->hasRole('PO') ? route('dashboard_po') : route('dashboard')) }}">
+                    Transgo
+                </a>                
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <i class="material-icons">keyboard_arrow_down</i>
                 </button>

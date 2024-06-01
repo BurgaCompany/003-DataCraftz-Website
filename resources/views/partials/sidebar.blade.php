@@ -4,12 +4,19 @@
             <li class="sidebar-title">
                 Apps
             </li>
+           
             @if(Auth::check() && !Auth::user()->hasRole('Root'))
-                <li>
+            <li>
+                @if (Auth::check() && Auth::user()->hasRole('PO'))
+                    <a href="{{ route('dashboard_po') }}" class="{{ request()->is('dashboard_po') ? 'active' : '' }}">
+                        <i class="material-icons">dashboard</i>Dashboard
+                    </a>
+                @else
                     <a href="{{ route('dashboard') }}" class="{{ request()->is('dashboard') ? 'active' : '' }}">
                         <i class="material-icons">dashboard</i>Dashboard
                     </a>
-                </li>
+                @endif
+            </li>
             @endif
 
             @if(Auth::check() && Auth::user()->hasRole('Root'))
@@ -45,7 +52,7 @@
                 @endif
             @endauth
 
-            @if(Auth::check() && Auth::user()->hasAnyRole(['PO', 'Admin']))
+            @if(Auth::check() && Auth::user()->hasRole('PO'))
                 <li>
                     <a href="{{ route('drivers.index') }}" class="{{ request()->is('drivers*') ? 'active' : '' }}">
                         <i class="material-icons">person_outline</i>Management Sopir
