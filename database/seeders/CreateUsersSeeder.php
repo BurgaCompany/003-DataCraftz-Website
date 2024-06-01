@@ -48,7 +48,7 @@ class CreateUsersSeeder extends Seeder
             'password' => bcrypt('password1234'),
             'address' => 'Jember Address',
             'gender' => 'female',
-            'phone_number' => '089803212945',
+            'phone_number' => '089803212944',
             'images' => 'avatars/female.jpg',
             'created_at' => now(),
         ]);

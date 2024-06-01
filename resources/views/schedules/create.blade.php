@@ -70,10 +70,11 @@
                                     <div class="col-md-12">
                                         <div class="form-group">
                                             <label for="price">Harga (Rupiah)</label>
-                                            <input type="number" class="form-control" name="price" id="price" required value="{{ old('price') }}">
+                                            <input type="number" class="form-control" name="price" id="price" oninput="if(this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" maxlength="6" value="{{ old('price') }}">
                                         </div>
                                     </div>
                                 </div>
+                                
                                 
                                 <div class="row">
                                     <div class="col-md-6">

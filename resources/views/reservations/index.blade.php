@@ -16,6 +16,7 @@
                                     <tr class="text-center">
                                         <th>Id Pemesanan</th>
                                         <th>Nama Bus</th>
+                                        <th>Perusahaan Otobus</th>
                                         <th>Terminal Berangkat</th>
                                         <th>Terminal Tujuan</th>
                                         <th>Harga</th>
@@ -38,6 +39,7 @@
                                     <tr class="text-center" id="upt_ids{{ $reservation->id }}">
                                         <td>{{ $reservation->id }}</td>
                                         <td>{{ $reservation->schedule->bus->name }} ({{ $reservation->schedule->bus->license_plate_number }})</td>
+                                        <td>{{ $reservation->bus->po->name }}</td>
                                         <td>{{ $reservation->schedule->fromStation->name }}</td>
                                         <td>{{ $reservation->schedule->toStation->name }}</td>
 
