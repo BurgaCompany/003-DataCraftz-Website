@@ -39,7 +39,7 @@
                                     <tr class="text-center" id="upt_ids{{ $reservation->id }}">
                                         <td>{{ $reservation->id }}</td>
                                         <td>{{ $reservation->schedule->bus->name }} ({{ $reservation->schedule->bus->license_plate_number }})</td>
-                                        <td>{{ $reservation->bus->po->name }}</td>
+                                        <td>{{$reservation->schedule->bus->po->name }}</td>
                                         <td>{{ $reservation->schedule->fromStation->name }}</td>
                                         <td>{{ $reservation->schedule->toStation->name }}</td>
 

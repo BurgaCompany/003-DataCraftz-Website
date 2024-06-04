@@ -50,7 +50,7 @@
                     </a>
                 </div>
                 <div class="col-md-4">
-                    <a href="{{ route('bus_stations.index') }}">
+                    <a href="{{ route('bus_conductors.index') }}">
                         <div class="card stat-card">
                             <div class="card-body">
                                 <div class="d-flex justify-content-between align-items-center">

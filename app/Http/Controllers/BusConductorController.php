@@ -291,6 +291,6 @@ class BusConductorController extends Controller
         User::whereIn('id', $request->ids)->delete();
 
         // Redirect ke halaman sebelumnya atau halaman lain yang sesuai
-        return redirect()->route('bus_conductor.index')->with('message', 'Berhasil menghapus data');
+        return redirect()->route('bus_conductors.index')->with('message', 'Berhasil menghapus data');
     }
 }

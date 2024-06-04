@@ -23,6 +23,7 @@ return new class extends Migration
             $table->string('information')->nullable(); // Field untuk keterangan tambahan jika status adalah 4
             $table->string('images')->nullable();
             $table->unsignedBigInteger('id_po')->nullable();
+            $table->softDeletes();
             $table->timestamps();
 
             $table->foreign('id_po')->references('id')->on('users')->onDelete('cascade');

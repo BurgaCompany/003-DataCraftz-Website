@@ -40,7 +40,8 @@ class BussesController extends Controller
                         'busses.*',
                         'drivers.name as driver_name',
                         'conductors.name as conductor_name'
-                    );
+                    )
+                    ->whereNull('busses.deleted_at'); // Tambahkan klausa whereNull untuk mengecualikan data yang dihapus
 
                 // Tambahkan kondisi where id_po jika pengguna memiliki peran PO
                 if ($user->hasRole('PO')) {
@@ -54,7 +55,11 @@ class BussesController extends Controller
                 return view('busses.index', compact('busses'));
             }
         }
+
+        // Jika pengguna tidak diautentikasi atau tidak memiliki peran yang sesuai, Anda dapat mengarahkan mereka ke halaman lain
+        return redirect()->route('login'); // atau halaman lain yang sesuai
     }
+
 
 
     public function search(Request $request)
