@@ -14,7 +14,11 @@ class ScheduleController extends Controller
 {
     public function index()
     {
-        $schedules = Schedule::all();
+        $schedules = Schedule::with([
+            'bus' => function ($query) {
+                $query->withTrashed();
+            }
+        ])->get();
 
         return view('schedules.index', compact('schedules'));
     }

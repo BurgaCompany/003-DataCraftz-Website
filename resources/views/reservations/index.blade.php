@@ -42,7 +42,6 @@
                                         <td>{{$reservation->schedule->bus->po->name }}</td>
                                         <td>{{ $reservation->schedule->fromStation->name }}</td>
                                         <td>{{ $reservation->schedule->toStation->name }}</td>
-
                                         <td>{{ $reservation->schedule->price }}</td>
                                         <td>{{ $reservation->date_departure }}</td>
                                         <td>{{ $reservation->schedule->time_start }}</td>

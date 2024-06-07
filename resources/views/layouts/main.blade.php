@@ -130,16 +130,18 @@
         <script src="../../assets/js/select.js"></script>
        <!-- Pastikan $userRegistrations telah disertakan sebelum script -->
       
-       @if(Route::currentRouteName() == 'dashboard')
-       
-       <script src="../../assets/js/dashboard.js"></script>
-       <script>
+       @if(Route::currentRouteName() == 'dashboard' || Route::currentRouteName() == 'dashboard_po')
+    <script src="../../assets/js/dashboard.js"></script>
+    <script>
         function filterBusses() {
             let status = document.getElementById('status').value;
             console.log('Selected status: ' + status);
             
+            // Tentukan URL berdasarkan nama rute saat ini
+            let url = "{{ Route::currentRouteName() == 'dashboard' ? route('dashboard') : route('dashboard_po') }}";
+            
             $.ajax({
-                url: `{{ route('dashboard') }}`,
+                url: url,
                 type: 'GET',
                 data: { status: status },
                 success: function(data) {
@@ -151,6 +153,8 @@
             });
         }
     </script>
+
+
         <script>
             document.addEventListener("DOMContentLoaded", function() {
                 // Data dari controller
