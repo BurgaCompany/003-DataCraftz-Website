@@ -22,7 +22,6 @@ class StationController extends Controller
                 'status' => 200,
                 'message' => 'Success',
                 'data' => StationResource::collection($station)
-                // 'data' => $station
             ]);
         } catch (\Throwable $th) {
             return response()->json([

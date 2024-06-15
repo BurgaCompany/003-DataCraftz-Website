@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Api;
 
 use App\Helpers\HttpResponseFormatter;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\FindScheduleByDateResource;
+use App\Http\Resources\FindScheduleResource;
 use App\Models\Buss;
 use App\Models\Reservation;
 use App\Models\Schedule;
@@ -280,5 +282,66 @@ class ScheduleController extends Controller
                 'result' =>  $e->getMessage()
             ]);
         }
+    }
+
+    public function findScheduleByInput(Request $request)
+    {
+        $from_station_id = $request->query('from_station');
+        $to_station_id = $request->query('to_station');
+        $date_departure = $request->query('date');
+        $date_now = now()->format('Y-m-d');
+        $schedule = Schedule::with(['bus', 'fromStation', 'toStation'])
+            ->whereFromStation($from_station_id)
+            ->whereToStation($to_station_id)
+            ->get();
+
+        $reservation = Reservation::where('date_departure', $date_departure)->count();
+
+        if ($schedule->isEmpty()) {
+            return response()->json([
+                'statusCode' => 400,
+                'message' => 'Not found',
+            ], 400);
+        }
+
+        if ($date_departure == $date_now) {
+            $schedule_byDate = Schedule::with(['bus', 'fromStation', 'toStation'])
+            ->whereFromStation($from_station_id)
+            ->whereToStation($to_station_id)
+            ->get();
+            return response()->json([
+                'statusCode' => 200,
+                'message' => 'Success!',
+                'result' => $schedule_byDate->map(function ($schedule) use ($date_departure) {
+                    return new FindScheduleByDateResource($schedule, $date_departure);
+                })
+            ]);
+        }
+        if ($date_departure < $date_now) {
+            return response()->json([
+                'statusCode' => 400,
+                'message' => 'Date must be greater than today!',
+            ]);
+        }
+
+        if ($reservation > 0) {
+            $schedule_byDate = Schedule::with(['bus', 'fromStation', 'toStation'])
+            ->whereFromStation($from_station_id)
+            ->whereToStation($to_station_id)
+            ->get();
+            return response()->json([
+                'statusCode' => 200,
+                'message' => 'Success!',
+                'result' => $schedule_byDate->map(function ($schedule) use ($date_departure) {
+                    return new FindScheduleByDateResource($schedule, $date_departure);
+                })
+            ]);
+        }
+
+        return response()->json([
+            'statusCode' => 200,
+            'message' => 'Success!',
+            'result' =>  FindScheduleResource::collection($schedule)
+        ]);
     }
 }

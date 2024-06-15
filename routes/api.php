@@ -35,6 +35,7 @@ Route::prefix('auth')->group(function () {
 
 Route::group(['namespace' => 'schedules'], function () {
     Route::get('schedules', [ScheduleController::class, 'getAllBusses']);
+    Route::get('schedules/find', [ScheduleController::class, 'findScheduleByInput']);
 });
 
 Route::group(['namespace' => 'station'], function () {

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Bus;
@@ -46,5 +47,15 @@ class Schedule extends Model
     public function toStation()
     {
         return $this->belongsTo(BusStation::class, 'to_station_id');
+    }
+
+    public function scopeWhereFromStation(Builder $builder, $fromStation)
+    {
+        return $builder->where('from_station_id', $fromStation);
+    }
+
+    public function scopeWhereToStation(Builder $builder, $toStation)
+    {
+        return $builder->where('to_station_id', $toStation);
     }
 }
