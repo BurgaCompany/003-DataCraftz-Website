@@ -41,10 +41,20 @@ class HttpResponseFormatter
     return $this;
   }
 
+  // public function setResult($data)
+  // {
+  //   $this->result = $data;
+  //   return $this;
+  // }
+
   public function setResult($data)
   {
-    $this->result = $data;
-    return $this;
+    $this->result = [
+      'message' => $this->metadata['message'],
+      'code' => $this->statusCode,
+      'data' => $data,
+    ];
+    
   }
 
   public function format()

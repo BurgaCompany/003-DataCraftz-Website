@@ -13,11 +13,12 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('bus_stations', function (Blueprint $table) {
+        Schema::create('track_bus', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('code_name');
-            $table->string('address');
+            $table->unsignedBigInteger('bus_id');
+            $table->foreign('bus_id')->references('id')->on('busses')->onDelete('cascade');
+            $table->string('latitude');
+            $table->string('longitude');
             $table->timestamps();
         });
     }
@@ -29,6 +30,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('bus_stations');
+        Schema::dropIfExists('track_bus');
     }
 };

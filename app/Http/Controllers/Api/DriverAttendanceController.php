@@ -36,10 +36,13 @@ class DriverAttendanceController extends Controller
             $validator = Validator::make($request->all(), $rules);
 
             if ($validator->fails()) {
-                return $this->responseFormatter->setStatusCode(400)
-                    ->setMessage('Validation Error!')
-                    ->setResult(['error' => $validator->errors()])
-                    ->format();
+                return response()->json([
+                    'statusCode' => 400,
+                    'message' => 'Error!',
+                    'result' => ['errors' => $validator->errors()]
+                ],
+                    400
+                );
             }
 
             // Cari bus berdasarkan ID
@@ -55,15 +58,21 @@ class DriverAttendanceController extends Controller
 
             $bus->save();
 
-            return $this->responseFormatter->setStatusCode(200)
-                ->setMessage('Bus status updated successfully!')
-                ->setResult(['bus' => $bus])
-                ->format();
+            // return $this->responseFormatter->setStatusCode(200)
+            //     ->setMessage('Bus status updated successfully!')
+            //     ->setResult(['bus' => $bus])
+            //     ->format();
+            return response()->json([
+                'statusCode' => 201,
+                'message' => 'Success!',
+                'result' => $bus,
+            ], 201);
         } catch (\Exception $e) {
-            return $this->responseFormatter->setStatusCode(500)
-                ->setMessage('Error!')
-                ->setResult(['error' => $e->getMessage()])
-                ->format();
+            return response()->json([
+                'statusCode' => 500,
+                'message' => 'An error occurred while processing your request.',
+                'result' => ['error' => $e->getMessage()]
+            ], 500);
         }
     }
 }
