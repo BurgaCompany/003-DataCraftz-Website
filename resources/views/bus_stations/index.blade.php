@@ -7,18 +7,36 @@
             <div class="row">
                 <div class="col-xl">
                     <div class="card">
-                        <div class="card-body d-flex justify-content-between align-items-center">
-                            <h2 class="card-title mb-4" style="font-size: 20px;">Data Terminal</h2>
-                            <div>
-                                <a href="{{ route('bus_stations.create') }}" class="btn btn-outline-success ml-auto" data-toggle="tooltip" data-placement="top" title="Tambah">
-                                    <i class="fas fa-plus"></i>
-                                </a>
-                                <a href="#" id="deleteAllSelectedRecord" class="btn btn-outline-danger ml-2" data-toggle="modal" data-target="#confirmationModal" data-url="{{ route('bus_stations.destroy.multi') }}">
-                                    <i class="fas fa-trash-alt"></i>
-                                </a>
+                        <div class="card-body">
+                            <h2 class="card-title mb-4" style="font-size: 20px;">Tabel Data Terminal</h2>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <form action="{{ route('bus_stations.search') }}" method="GET">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" name="search" id="searchInput" placeholder="Masukkan Nama Terminal" value="" size="30">
+                                            <div class="input-group-append">
+                                                <button class="btn btn-primary" type="submit">
+                                                    <i class="fas fa-search"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="d-flex">
+                                    <a href="{{ route('bus_stations.index') }}" id="refreshPage" class="btn btn-outline-info mr-2" data-toggle="tooltip" data-placement="top" title="Segarkan">
+                                        <i class="fas fa-sync-alt mr-1"></i>
+                                    </a>
+                                   
+                                    <a href="{{ route('bus_stations.create') }}" class="btn btn-outline-success mr-2" data-toggle="tooltip" data-placement="top" title="Tambah">
+                                        <i class="fas fa-plus"></i>
+                                    </a>
+                                    <a href="#" id="deleteAllSelectedRecord" class="btn btn-outline-danger" data-toggle="modal" data-target="#confirmationModal" data-url="{{ route('bus_stations.destroy.multi') }}" >
+                                        <i class="fas fa-trash-alt"></i>
+                                    </a>
+                                    
+                                </div>
                             </div>
                         </div>
-                        
                         <div id="confirmationModal" class="modal fade" role="dialog">
                             <div class="modal-dialog">
                               <!-- Konten modal -->
@@ -37,30 +55,75 @@
                               </div>
                             </div>
                           </div>
-
-                          <div class="my-4 mx-4">
-                            <div class="row">
-                                @if ($userBusStations->isEmpty())
-                                <div class="col-md-12 mb-4 text-center">
-                                        <p>Data kosong atau tidak ada data</p>
-                                    </div>
-                                @else
-                                    @foreach ($userBusStations as $userBusStations)
-                                        <div class="col-md-4 mb-4">
-                                            <div class="custom-card" onclick="if(!event.target.classList.contains('form-check-input')) window.location.href = '{{ route('bus_stations.detail', ['id' => $userBusStations->busStation->id]) }}'">
-                                                <input type="checkbox" class="form-check-input checkbox_ids" id="{{ $userBusStations->busStation->id }}" value="{{ $userBusStations->busStation->id }}" onclick="event.stopPropagation()">
-                                                    <div class="card-body centered-content">
-                                                        <span class="icon"><i class="fas fa-bus"></i></span>
-                                                        <p class="card-text">{{ $userBusStations->busStation->name }}</p>
-                                                    </div>
-                                                </label>
+                        <div id="uptTable" class="table-responsive">
+                            <table class="table">
+                                <thead >
+                                    <tr class="text-center">
+                                        <th>
+                                            <input type="checkbox" name = "" id="select_all_ids">
+                                        </th>
+                                        <th>ID</th>
+                                        <th>Nama</th>
+                                        <th>Kode Nama</th>
+                                        <th>Kota</th>
+                                        <th>Alamat</th>
+                                        <th>Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if ($userBusStations->isEmpty())
+                                        <tr>
+                                            <td colspan="9" class="text-center">Data kosong atau tidak ada data</td>
+                                        </tr>
+                                    @else
+                                    @foreach($userBusStations as $userBusStation)
+                                    <tr class="text-center" id = "upt_ids{{ $userBusStation ->id }}">
+                                        <td><input type="checkbox" name="ids" class = "checkbox_ids" id ="{{ $userBusStation->busStation->id }}" value="{{ $userBusStation->id }}"></td>
+                                        <td>{{ $userBusStation->busStation->id }}</td>
+                                        <td>{{ $userBusStation->busStation->name }}</td> 
+                                        <td>{{ $userBusStation->busStation->code_name }}</td>
+                                        <td>{{ $userBusStation->busStation->city }}</td>
+                                        <td>{{ Str::limit($userBusStation->busStation->address, 50, '...') }}</td>
+                                        <td>
+                                            <div class="btn-group" role="group" aria-label="Basic example">
+                                                <a href="{{ route('bus_stations.detail', $userBusStation->busStation->id) }}" class="btn btn-warning" data-toggle="tooltip" data-placement="top" title="Detail">
+                                                    <i class="fas fa-eye"></i>
+                                                </a>
                                             </div>
-                                        </div>
+                                            <div class="btn-group" role="group" aria-label="Basic example">
+                                                <a href="{{ route('bus_stations.edit', $userBusStation->busStation->id) }}" class="btn btn-primary" data-toggle="tooltip" data-placement="top" title="Ubah">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
                                     @endforeach
+                                    @endif
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <nav aria-label="Page navigation example">
+                            <ul class="pagination justify-content-center">
+                                @if ($userBusStations->previousPageUrl())
+                                    <li class="page-item"><a class="page-link" href="{{ $userBusStations->previousPageUrl() }}">Kembali</a></li>
+                                @else
+                                    <li class="page-item disabled"><span class="page-link">Kembali</span></li>
                                 @endif
-                            </div>
-                        </div>
-                        </div>
+                        
+                                @for ($i = 1; $i <= $userBusStations->lastPage(); $i++)
+                                    <li class="page-item {{ $userBusStations->currentPage() == $i ? 'active' : '' }}">
+                                        <a class="page-link" href="{{ $userBusStations->url($i) }}">{{ $i }}</a>
+                                    </li>
+                                @endfor
+                        
+                                @if ($userBusStations->nextPageUrl())
+                                    <li class="page-item"><a class="page-link" href="{{ $userBusStations->nextPageUrl() }}">Berikutnya</a></li>
+                                @else
+                                    <li class="page-item disabled"><span class="page-link">Berikutnya</span></li>
+                                @endif
+                            </ul>
+                        </nav>
                     </div>
                 </div>
             </div>

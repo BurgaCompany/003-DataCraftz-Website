@@ -26,6 +26,11 @@
         <link href="../../assets/plugins/cropper-master/cropper.min.css" rel="stylesheet"> 
         <link href="https://unpkg.com/cropperjs/dist/cropper.css" rel="stylesheet"/> 
 
+        <!-- Leaflet CSS -->
+        <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+
+        <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css"/>
+
         <!-- Theme Styles -->
         <link href="../../assets/css/lime.min.css" rel="stylesheet">
         <link href="../../assets/css/custom.css" rel="stylesheet">
@@ -33,6 +38,8 @@
         
         <script src="../../assets/js/valid_busstat.js"></script>
         <script src="https://unpkg.com/cropperjs"></script>
+
+        
    
 
 
@@ -111,6 +118,11 @@
         <script src="../../assets/plugins/bootstrap/js/bootstrap.min.js"></script>
         <script src="../../assets/plugins/jquery-slimscroll/jquery.slimscroll.min.js"></script>
         <script src="../../assets/plugins/cropper-master/cropper.min.js"></script>
+        <!-- Leaflet JS -->
+        <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+        <!-- Leaflet-Geosearch JS -->
+        <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
         
         <script src="../../assets/plugins/toastr/toastr.min.js"></script>
         <script src="../../assets/plugins/select2/js/select2.full.min.js"></script>
@@ -121,9 +133,10 @@
         <script src="../../assets/js/pages/select2.js"></script>
 
         <script src="../../assets/js/custom.js"></script>
+        <script src="../../assets/js/map.js"></script>
         <script src="../../assets/js/search.js"></script>
         <script src="../../assets/js/valid_busstat.js"></script>
-        <script src="../../assets/js/disabled.js"></script>
+        {{-- <script src="../../assets/js/disabled.js"></script> --}}
         <script src="../../assets/js/multi_del.js"></script>
         <script src="../../assets/js/status.js"></script>
         <script src="../../assets/js/upload.js"></script>

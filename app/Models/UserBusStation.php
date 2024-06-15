@@ -21,6 +21,6 @@ class UserBusStation extends Model
 
     public function busStation()
     {
-        return $this->belongsTo(BusStation::class);
+        return $this->belongsTo(BusStation::class, 'bus_station_id');
     }
 }

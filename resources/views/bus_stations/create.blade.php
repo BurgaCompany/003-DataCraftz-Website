@@ -12,12 +12,26 @@
                             <p>Isi data dengan lengkap dan tepat</p>
                             <form method="POST" action="{{ route('bus_stations.store') }}" enctype="multipart/form-data">
                                 @csrf   
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        <label for="name">Nama</label>
-                                        <input type="text" class="form-control" name="name" id="name" placeholder="Masukkan Nama" required value="{{ old('name') }}">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="name">Nama</label>
+                                            <input type="text" class="form-control" name="name" id="name" placeholder="Masukkan Nama" required value="{{ old('name') }}">
+                                        </div>
                                     </div>
-                                </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="code_name">Kode Nama</label>
+                                            <input type="text" class="form-control" name="code_name" id="code_name" placeholder="Masukkan Kode Nama" required value="{{ old('code_name') }}">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label for="city">Kota</label>
+                                            <input type="text" class="form-control" name="city" id="city" placeholder="Masukkan Kota" required value="{{ old('city') }}">
+                                        </div>
+                                    </div>
+
                                 <div class="col-md-12">
                                     <div class="form-group">
                                         <label for="address">Alamat</label>
@@ -42,6 +56,31 @@
                                         </div>
                                     </div>
                                 </div>
+
+                                <!-- Leaflet map container -->
+                                <div class="col-md-12"> 
+                                <div id="map" style="height: 400px;"></div>
+                                </div>
+                            </div>
+                                <br>
+
+                                <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="latitude">Latitude</label>
+                                        <input type="text" class="form-control" name="latitude" id="latitude" placeholder="Latitude" readonly required value="{{ old('latitude') }}">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="longitude">Longitude</label>
+                                        <input type="text" class="form-control" name="longitude" id="longitude" placeholder="Longitude" readonly required value="{{ old('longitude') }}">
+                                    </div>
+                                </div>
+                            </div>
+
+                           
+
                                 <!-- Button trigger modal -->
                                 <button type="button" class="btn btn-primary float-left mr-2" data-toggle="modal" data-target="#exampleModal">
                                     Tambah

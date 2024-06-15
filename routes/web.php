@@ -114,10 +114,6 @@ Route::middleware(['role:Upt'])->group(function () {
     Route::put('/admins/{id}', [AdminController::class, 'update'])->name('admins.update');
     Route::post('/admins/delete', [AdminController::class, 'destroyMulti'])->name('admins.destroy.multi');
 
-
-
-
-
     // route for bus_stations
     Route::get('/bus_stations', [BusStationController::class, 'index'])->name('bus_stations.index');
     Route::get('/bus_stations/search', [BusStationController::class, 'search'])->name('bus_stations.search');

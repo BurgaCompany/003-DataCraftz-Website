@@ -8,44 +8,42 @@
                 <div class="col-xl">
                     <div class="card">
                         <div class="card-body">
-                            <h5 class="card-title">Detail Terminal</h5>
+                            <h5 class="card-title">Ubah Terminal</h5>
                             <form method="POST" action="{{ route('bus_stations.update', $busStation->id) }}" enctype="multipart/form-data">
                                 @csrf
                                 @method('PUT')
                                 <div class="row">
-
-                                
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="name">Nama</label>
-                                        <input type="text" class="form-control" name="name" id="name" placeholder="Masukkan Nama" required disabled value="{{ old('name', $busStation->name) }}">
+                                        <input type="text" class="form-control" name="name" id="name" placeholder="Masukkan Nama" required value="{{ old('name', $busStation->name) }}">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="code_name">Kode Nama</label>
-                                        <input type="text" class="form-control" name="code_name" id="code_name" placeholder="Masukkan Kode Nama" required  disabled value="{{ old('code_name', $busStation->code_name) }}">
+                                        <input type="text" class="form-control" name="code_name" id="code_name" placeholder="Masukkan Kode Nama" required  value="{{ old('code_name', $busStation->code_name) }}">
                                     </div>
                                 </div>
                                 <div class="col-md-12">
                                     <div class="form-group">
                                         <label for="city">Kota</label>
-                                        <input type="text" class="form-control" name="city" id="city" placeholder="Masukkan Kota" required  disabled value="{{ old('city', $busStation->city) }}">
+                                        <input type="text" class="form-control" name="city" id="city" placeholder="Masukkan Kota" required  value="{{ old('city', $busStation->city) }}">
                                     </div>
                                 </div>
                                 <div class="col-md-12">
                                     <div class="form-group">
                                         <label for="address">Alamat</label>
-                                        <textarea type="text" class="form-control" name="address" id="address" placeholder="Alamat" required disabled>{{ old('address', $busStation->address) }}</textarea>
+                                        <textarea type="text" class="form-control" name="address" id="address" placeholder="Alamat" required>{{ old('address', $busStation->address) }}</textarea>
                                     </div>
                                 </div>
                                 <div class="col-md-12">
                                     <div class="form-group">
                                         <label for="admins">Admin</label>
-                                        <select class="js-states form-control" name="id_admin[]" id="admins" style="width: 100%" multiple="multiple" disabled>
+                                        <select class="js-states form-control" name="id_admin[]" id="admins" style="width: 100%" multiple="multiple">
                                             @if($admins->isEmpty())
-                                            <option disabled selected>Belum Ada Admin</option>
-                                        @endif
+                                                <option selected disabled>Belum Ada Admin</option>
+                                            @endif
                                             @foreach($admins as $admin)
                                                 @if(in_array($admin->id, $selectedAdmins))
                                                     <option value="{{ $admin->id }}" selected>{{ $admin->name }}</option>
@@ -54,8 +52,14 @@
                                                 @endif
                                             @endforeach
                                         </select>
+                                        <div class="input-group-append">
+                                            <span class="ml-2 text-primary" style="font-size: 12px; cursor: pointer;" onclick="location.href='{{ route('admins.create') }}'">
+                                                klik disini untuk menambah admin
+                                            </span>
+                                        </div>
                                     </div>
                                 </div>
+                                
                            <!-- Leaflet map container -->
                            <div class="col-md-12"> 
                             <div id="map" style="height: 400px;"></div>
@@ -78,15 +82,14 @@
                             </div>
                         </div>
                                 
-                                <!-- Button trigger modal -->
-                                <button id="saveButton" type="button" class="btn btn-success float-left mr-2" data-toggle="modal" data-target="#exampleModal" style="display: none;">
-                                    Simpan Perubahan
-                                </button>
-                                
-                                <!-- Button trigger modal -->
-                                <button type="button" class="btn btn-secondary float-left" data-toggle="modal" data-target="#exampleModalback">
-                                    Kembali
-                                </button>
+                           <!-- Button trigger modal -->
+                           <button type="button" class="btn btn-primary float-left mr-2" data-toggle="modal" data-target="#exampleModal">
+                            Ubah
+                        </button>
+                        <!-- Button trigger modal -->
+                        <button type="button" class="btn btn-secondary float-left" data-toggle="modal" data-target="#exampleModalback">
+                            Kembali
+                        </button>
                                 <!-- Modal -->
                                 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                     <div class="modal-dialog" role="document">

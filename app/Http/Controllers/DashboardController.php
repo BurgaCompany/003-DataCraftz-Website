@@ -58,11 +58,11 @@ class DashboardController extends Controller
         $status = $request->input('status');
         $query = Buss::leftJoin('driver_conductor_bus', 'busses.id', '=', 'driver_conductor_bus.bus_id')
             ->leftJoin('users as drivers', 'driver_conductor_bus.driver_id', '=', 'drivers.id')
-            ->leftJoin('users as conductors', 'driver_conductor_bus.bus_conductor_id', '=', 'conductors.id')
+
             ->select(
                 'busses.*',
                 'drivers.name as driver_name',
-                'conductors.name as conductor_name'
+
             );
 
         if ($status) {

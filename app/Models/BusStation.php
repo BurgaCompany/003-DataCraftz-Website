@@ -9,7 +9,7 @@ class BusStation extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'address'];
+    protected $fillable = ['name', 'code_name', 'city', 'address', 'latitude', 'longitude'];
 
     public function upt()
     {

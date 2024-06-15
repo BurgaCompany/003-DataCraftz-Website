@@ -19,7 +19,7 @@ class BusStationController extends Controller
     public function index()
     {
         $userId = Auth::id();
-        $userBusStations = UserBusStation::with('busStation')->where('user_id', $userId)->get();
+        $userBusStations = UserBusStation::with('busStation')->where('user_id', $userId)->paginate(15);
         return view('bus_stations.index', compact('userBusStations'));
     }
 
@@ -42,9 +42,12 @@ class BusStationController extends Controller
     {
         $request->validate([
             'name' => 'required|string',
+            'code_name' => 'required|string',
+            'city' => 'required|string',
             'address' => 'required|string',
-            'admin' => 'nullable|array', // Bidang 'admin' bisa null atau array
-            // Validasi untuk memastikan bahwa setidaknya satu admin dipilih
+            'admin' => 'nullable|array',
+            'latitude' => 'required|string',
+            'longitude' => 'required|string',
         ]);
 
         $userId = Auth::id();
@@ -52,7 +55,11 @@ class BusStationController extends Controller
         // Membuat stasiun bus baru
         $busStation = BusStation::create([
             'name' => $request->name,
+            'code_name' => $request->code_name,
+            'city' => $request->city,
             'address' => $request->address,
+            'latitude' => $request->latitude,
+            'longitude' => $request->longitude,
         ]);
 
         // Menyimpan relasi antara admin (pengguna) yang sedang login dan stasiun bus yang baru dibuat
@@ -87,6 +94,7 @@ class BusStationController extends Controller
             ->where('bus_station_id', $id)
             ->first();
 
+
         // Jika tidak ditemukan, tolak akses atau alihkan pengguna
         if (!$userBusStation) {
             return redirect()->route('bus_stations.index')->with('error', 'Anda tidak memiliki akses ke stasiun bus ini.');
@@ -110,23 +118,54 @@ class BusStationController extends Controller
 
     public function edit($id)
     {
+        $userId = Auth::id();
         $busStation = BusStation::findOrFail($id);
-        return view('bus_stations.edit', compact('busStation'));
+
+        // Cek apakah stasiun bus dengan ID yang diberikan terkait dengan pengguna
+        $userBusStation = UserBusStation::where('user_id', $userId)
+            ->where('bus_station_id', $id)
+            ->first();
+
+
+        // Jika tidak ditemukan, tolak akses atau alihkan pengguna
+        if (!$userBusStation) {
+            return redirect()->route('bus_stations.index')->with('error', 'Anda tidak memiliki akses ke stasiun bus ini.');
+        }
+
+        $adminBusStations = AdminBusStation::where('bus_station_id', $busStation->id)->get();
+        $selectedAdmins = $adminBusStations->pluck('user_id')->toArray();
+
+        $admins = User::role('Admin')
+            ->where(function ($query) use ($busStation) {
+                $query->whereHas('adminBusStations', function ($query) use ($busStation) {
+                    $query->where('bus_station_id', $busStation->id);
+                })->orWhereDoesntHave('adminBusStations');
+            })
+            ->where('id_upt', $userId)
+            ->get();
+
+
+        return view('bus_stations.edit', compact('busStation', 'admins', 'selectedAdmins'));
     }
 
     public function update(Request $request, $id)
     {
         $busStation = BusStation::findOrFail($id);
         $request->validate([
-            'name' => 'required|string',
-            'address' => 'required|string',
-            'admin' => 'nullable|array', // Bidang 'admin' bisa null atau array
-            // Validasi untuk memastikan bahwa setidaknya satu admin dipilih
+            'name' => 'required|string|max:255',
+            'code_name' => 'required|string|max:255',
+            'city' => 'required|string|max:255',
+            'address' => 'required|string|max:255',
+            'latitude' => 'required|numeric',
+            'longitude' => 'required|numeric',
         ]);
 
         $busStation->name = $request->name;
+        $busStation->code_name = $request->code_name;
+        $busStation->city = $request->city;
         $busStation->address = $request->address;
-
+        $busStation->latitude = $request->latitude;
+        $busStation->longitude = $request->longitude;
 
         $busStation->save();
 
