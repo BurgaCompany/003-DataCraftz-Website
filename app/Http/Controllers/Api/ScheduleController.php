@@ -26,15 +26,17 @@ class ScheduleController extends Controller
         try {
             $schedules = Schedule::with(['bus', 'fromStation', 'toStation'])->get();
 
-            return $this->responseFormatter->setStatusCode(200)
-                ->setMessage('Success!')
-                ->setResult(['schedules' => $schedules])
-                ->format();
+            return response()->json([
+                'statusCode' => 200,
+                'message' => 'Success!',
+                'result' =>  $schedules
+            ]);
         } catch (\Exception $e) {
-            return $this->responseFormatter->setStatusCode(500)
-                ->setMessage('Error!')
-                ->setResult(['erros' => $e])
-                ->format();
+            return response()->json([
+                'statusCode' => 500,
+                'message' => 'Error!',
+                'result' => ['errors' => $e->getMessage()]
+            ]);
         }
     }
 
@@ -48,47 +50,52 @@ class ScheduleController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return $this->responseFormatter->setStatusCode(400)
-                ->setMessage('Validation Error!')
-                ->setResult(['error' => $validator->errors()])
-                ->format();
+            return response()->json([
+                'statusCode' => 400,
+                'message' => 'Validation Error!',
+                'result' => ['errors' => $validator->errors()]
+            ], 400);
         }
 
         $user = auth('api')->user();
 
         if (!$user) {
-            return $this->responseFormatter->setStatusCode(401)
-                ->setMessage('Unauthenticated')
-                ->setResult(['error' => 'Unauthenticated'])
-                ->format();
+            return response()->json([
+                'statusCode' => 401,
+                'message' => 'Unauthenticated',
+                'result' => ['error' => 'Unauthenticated']
+            ], 401);
         }
 
         // Find the schedule by schedule_id
         $schedule = Schedule::find($request->input('schedule_id'));
 
         if (!$schedule) {
-            return $this->responseFormatter->setStatusCode(404)
-                ->setMessage('Schedule Not Found')
-                ->setResult(['error' => 'Schedule not found'])
-                ->format();
+            return response()->json([
+                'statusCode' => 404,
+                'message' => 'Schedule Not Found',
+                'result' => ['error' => 'Schedule not found']
+            ], 404);
         }
 
         // Find the bus associated with the schedule
         $bus = Buss::find($schedule->bus_id);
 
         if (!$bus) {
-            return $this->responseFormatter->setStatusCode(404)
-                ->setMessage('Bus Not Found')
-                ->setResult(['error' => 'Bus not found'])
-                ->format();
+            return response()->json([
+                'statusCode' => 404,
+                'message' => 'Bus Not Found',
+                'result' => ['error' => 'Bus not found']
+            ], 404);
         }
 
         // Check if there are enough chairs available
         if ($bus->chair < $request->tickets_booked) {
-            return $this->responseFormatter->setStatusCode(400)
-                ->setMessage('Not Enough Chairs Available')
-                ->setResult(['error' => 'Not enough chairs available'])
-                ->format();
+            return response()->json([
+                'statusCode' => 400,
+                'message' => 'Not Enough Chairs',
+                'result' => ['error' => 'Not enough chairs available']
+            ], 400);
         }
 
         // Check if there is an existing reservation for the user and schedule
@@ -120,18 +127,17 @@ class ScheduleController extends Controller
         // Load the user's name
         $reservation->load('user');
 
-        return $this->responseFormatter->setStatusCode(201)
-            ->setMessage('Reservation Successful!')
-            ->setResult([
-                'reservation' => $reservation,
-                'user_name' => $reservation->user->name,
-            ])
-            ->format();
+        return response()->json([
+            'statusCode' => 201,
+            'message' => 'Reservation Successful!',
+            'result' => $reservation
+        ], 201);
     } catch (\Exception $e) {
-        return $this->responseFormatter->setStatusCode(500)
-            ->setMessage('Error!')
-            ->setResult(['error' => $e->getMessage()])
-            ->format();
+        return response()->json([
+            'statusCode' => 500,
+            'message' => 'Error!',
+            'result' => ['error' => $e->getMessage()]
+        ], 500);
     }
 }
 
@@ -145,19 +151,21 @@ class ScheduleController extends Controller
             ]);
 
             if ($validator->fails()) {
-                return $this->responseFormatter->setStatusCode(400)
-                    ->setMessage('Validation Error!')
-                    ->setResult(['error' => $validator->errors()])
-                    ->format();
+                return response()->json([
+                    'statusCode' => 400,
+                    'message' => 'Validation Error!',
+                    'result' =>  $validator->errors()
+                ], 400);
             }
 
             $user = auth('api')->user();
 
             if (!$user) {
-                return $this->responseFormatter->setStatusCode(401)
-                    ->setMessage('Unauthenticated')
-                    ->setResult(['error' => 'Unauthenticated'])
-                    ->format();
+                return response()->json([
+                    'statusCode' => 401,
+                    'message' => 'Unauthenticated',
+                    'result' =>  'Unauthenticated'
+                ], 401);
             }
 
             // Find the reservation by ID
@@ -171,10 +179,11 @@ class ScheduleController extends Controller
                 ->setMessage('Update Reservation Successful!')
                 ->format();
         } catch (\Exception $e) {
-            return $this->responseFormatter->setStatusCode(500)
-                ->setMessage('Error!')
-                ->setResult(['error' => $e->getMessage()])
-                ->format();
+            return response()->json([
+                'statusCode' => 500,
+                'message' => 'Error!',
+                'result' =>  $e->getMessage()
+            ], 500);
         }
     }
 
@@ -195,15 +204,17 @@ class ScheduleController extends Controller
                 ->get();
 
 
-            return $this->responseFormatter->setStatusCode(200)
-                ->setMessage('Success!')
-                ->setResult(['reservations' => $schedules])
-                ->format();
+            return response()->json([
+                'statusCode' => 200,
+                'message' => 'Success!',
+                'result' =>  $schedules
+            ]);
         } catch (\Exception $e) {
-            return $this->responseFormatter->setStatusCode(500)
-                ->setMessage('Error!')
-                ->setResult(['errors' => $e->getMessage()])
-                ->format();
+            return response()->json([
+                'statusCode' => 500,
+                'message' => 'Error!',
+                'result' =>  $e->getMessage()
+            ]);
         }
     }
 
@@ -232,15 +243,17 @@ class ScheduleController extends Controller
                 ->get();
 
 
-            return $this->responseFormatter->setStatusCode(200)
-                ->setMessage('Success!')
-                ->setResult(['costumer_reservations' => $reservations])
-                ->format();
+            return response()->json([
+                'statusCode' => 200,
+                'message' => 'Success!',
+                'result' =>  $reservations
+            ]);
         } catch (\Exception $e) {
-            return $this->responseFormatter->setStatusCode(500)
-                ->setMessage('Error!')
-                ->setResult(['errors' => $e->getMessage()])
-                ->format();
+            return response()->json([
+                'statusCode' => 500,
+                'message' => 'Error!',
+                'result' =>  $e->getMessage()
+            ]);
         }
     }
 }
