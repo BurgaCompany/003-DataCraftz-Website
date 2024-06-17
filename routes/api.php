@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\Auth\AuthController;
 use App\Http\Controllers\Api\ScheduleController;
 use App\Http\Controllers\Api\DriverAttendanceController;
+use App\Http\Controllers\Api\MidtransController;
 use App\Http\Controllers\Api\StationController;
 use Illuminate\Support\Facades\Route;
 
@@ -41,5 +42,10 @@ Route::group(['namespace' => 'schedules'], function () {
 Route::group(['namespace' => 'station'], function () {
     Route::get('station', [StationController::class, 'allStation']);
 });
+
+Route::group(['namespace' => 'midtrans'], function () {
+    Route::post('midtrans-payment-gateway', [MidtransController::class, 'show']);
+});
+
 
 Route::put('Driver/status/{id}', [DriverAttendanceController::class, 'updateStatus']);
