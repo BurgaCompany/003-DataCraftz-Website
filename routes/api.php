@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\ScheduleController;
 use App\Http\Controllers\Api\DriverAttendanceController;
 use App\Http\Controllers\Api\MidtransController;
 use App\Http\Controllers\Api\StationController;
+use App\Http\Controllers\Api\TrackBusController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -46,6 +47,11 @@ Route::group(['namespace' => 'station'], function () {
 Route::group(['namespace' => 'midtrans'], function () {
     Route::post('midtrans-payment-gateway', [MidtransController::class, 'show']);
 });
+
+Route::group(['namespace' => 'tracking'], function () {
+    Route::post('tracking-bus', [TrackBusController::class, 'updateLocation']);
+});
+
 
 
 Route::put('Driver/status/{id}', [DriverAttendanceController::class, 'updateStatus']);

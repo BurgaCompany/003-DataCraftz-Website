@@ -23,6 +23,7 @@ return new class extends Migration
             $table->string('phone_number')->nullable(false);
             $table->string('images')->nullable(true);
             $table->double('rating')->nullable(true);
+            $table->string('review')->nullable(true);
             $table->integer('balance')->nullable(true);
             $table->unsignedBigInteger('id_upt')->nullable();
             $table->unsignedBigInteger('id_po')->nullable();
