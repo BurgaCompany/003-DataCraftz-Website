@@ -12,6 +12,7 @@ use App\Http\Controllers\BusStationController;
 use App\Http\Controllers\DashboardPoController;
 use App\Http\Controllers\DriverController;
 use App\Http\Controllers\LandingController;
+use App\Http\Controllers\MidtransController;
 use App\Http\Controllers\OtobusController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReservationController;
@@ -33,6 +34,9 @@ Route::put('/profile/update/{id}', [ProfileController::class, 'update'])->middle
 
 Route::middleware(['role:PO'])->group(function () {
     //Route for Drivers
+    Route::get('/drivers', [DriverController::class, 'index'])->name('drivers.index');
+    Route::get('/drivers/search', [DriverController::class, 'search'])->name('drivers.search');
+    Route::get('/drivers/{id}/detail', [DriverController::class, 'detail'])->name('drivers.detail');
     Route::get('/drivers/create', [DriverController::class, 'create'])->name('drivers.create');
     Route::post('/drivers', [DriverController::class, 'store'])->name('drivers.store');
     Route::get('/drivers/{id}/edit', [DriverController::class, 'edit'])->name('drivers.edit');
@@ -40,6 +44,9 @@ Route::middleware(['role:PO'])->group(function () {
     Route::post('/drivers/delete', [DriverController::class, 'destroyMulti'])->name('drivers.destroy.multi');
 
     //Route for bus_conductors
+    Route::get('/bus_conductors', [BusConductorController::class, 'index'])->name('bus_conductors.index');
+    Route::get('/bus_conductors/search', [BusConductorController::class, 'search'])->name('bus_conductors.search');
+    Route::get('/bus_conductors/{id}/detail', [BusConductorController::class, 'detail'])->name('bus_conductors.detail');
     Route::get('/bus_conductors/create', [BusConductorController::class, 'create'])->name('bus_conductors.create');
     Route::post('/bus_conductors', [BusConductorController::class, 'store'])->name('bus_conductors.store');
     Route::get('/bus_conductors/{id}/edit', [BusConductorController::class, 'edit'])->name('bus_conductors.edit');
@@ -50,21 +57,14 @@ Route::middleware(['role:PO'])->group(function () {
     Route::get('/busses/create', [BussesController::class, 'create'])->name('busses.create');
     Route::post('/busses', [BussesController::class, 'store'])->name('busses.store');
     Route::post('/busses/delete', [BussesController::class, 'destroyMulti'])->name('busses.destroy.multi');
-
-    Route::get('/drivers', [DriverController::class, 'index'])->name('drivers.index');
-    Route::get('/drivers/search', [DriverController::class, 'search'])->name('drivers.search');
-    Route::get('/drivers/{id}/detail', [DriverController::class, 'detail'])->name('drivers.detail');
-
-    Route::get('/bus_conductors', [BusConductorController::class, 'index'])->name('bus_conductors.index');
-    Route::get('/bus_conductors/search', [BusConductorController::class, 'search'])->name('bus_conductors.search');
-    Route::get('/bus_conductors/{id}/detail', [BusConductorController::class, 'detail'])->name('bus_conductors.detail');
-
     Route::get('/busses', [BussesController::class, 'index'])->name('busses.index');
     Route::get('/busses/search', [BussesController::class, 'search'])->name('busses.search');
     Route::get('/busses/{id}/edit', [BussesController::class, 'edit'])->name('busses.edit');
     Route::get('/busses/{id}/detail', [BussesController::class, 'detail'])->name('busses.detail');
     Route::put('/busses/{id}', [BussesController::class, 'update'])->name('busses.update');
     Route::get('/busses/filter', [BussesController::class, 'filter'])->name('busses.filter');
+
+    Route::get('/busses/{id}/track', [BussesController::class, 'track'])->name('busses.track');
 });
 
 

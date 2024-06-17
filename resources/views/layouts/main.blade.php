@@ -120,9 +120,12 @@
         <script src="../../assets/plugins/cropper-master/cropper.min.js"></script>
         <!-- Leaflet JS -->
         <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-
         <!-- Leaflet-Geosearch JS -->
         <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+        <script src="https://unpkg.com/leaflet-polylinedecorator/leaflet.polylineDecorator.js"></script>
+
+
+        
         
         <script src="../../assets/plugins/toastr/toastr.min.js"></script>
         <script src="../../assets/plugins/select2/js/select2.full.min.js"></script>
@@ -133,7 +136,9 @@
         <script src="../../assets/js/pages/select2.js"></script>
 
         <script src="../../assets/js/custom.js"></script>
+        
         <script src="../../assets/js/map.js"></script>
+        <script src="../../assets/js/track.js"></script>
         <script src="../../assets/js/search.js"></script>
         <script src="../../assets/js/valid_busstat.js"></script>
         {{-- <script src="../../assets/js/disabled.js"></script> --}}

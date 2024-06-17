@@ -59,11 +59,6 @@
                     </a>
                 </li>
                 <li>
-                    <a href="{{ route('bus_conductors.index') }}" class="{{ request()->is('bus_conductors*') ? 'active' : '' }}">
-                        <i class="material-icons">person_outline</i>Management Kondektur
-                    </a>
-                </li>
-                <li>
                     <a href="{{ route('busses.index') }}" class="{{ request()->is('busses*') ? 'active' : '' }}">
                         <i class="material-icons">directions_bus</i>Management Bus
                     </a>

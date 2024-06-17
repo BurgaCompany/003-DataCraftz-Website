@@ -123,7 +123,6 @@
                                             <th>Kelas</th>
                                             <th>Informasi</th>
                                             <th>Sopir</th>
-                                            <th>Kondektur</th>
                                             <th>Perusahaan Otobus</th>
                                         </tr>
                                     </thead>

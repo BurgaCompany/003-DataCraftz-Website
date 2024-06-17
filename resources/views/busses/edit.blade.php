@@ -84,7 +84,7 @@
                                 </div>
                             </div>
                                 <div class="row">
-                                <div class="col-md-6">
+                                <div class="col-md-12">
                                     <div class="form-group">
                                         <label for="drivers">Sopir</label>
                                         <select class="js-states form-control" name="drivers[]" id="drivers" style="width: 100%"  title="Pilih satu atau lebih sopir">
@@ -99,34 +99,10 @@
                                             @endif
                                             @endforeach
                                         </select>
-                                        @if (Auth::user()->hasRole('Upt'))
+                                        @if (Auth::user()->hasRole('PO'))
                                         <div class="input-group-append">
                                             <span class="ml-2 text-primary" style="font-size: 12px; cursor: pointer;" onclick="location.href='{{ route('drivers.create') }}'">
                                                 klik disini untuk menambah Sopir
-                                            </span>
-                                        </div>
-                                        @endif
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="bus_conductors">Kondektur</label>
-                                        <select class="js-states form-control" name="bus_conductors[]" id="bus_conductors" style="width: 100%"  title="Pilih satu atau lebih kondektur">
-                                            @if($bus_conductors->isEmpty())
-                                            <option disabled selected>Belum Ada Kondektur</option>
-                                            @endif
-                                            @foreach($bus_conductors as $bus_conductor)
-                                            @if(in_array($bus_conductor->id, $assignedBusConductors))
-                                            <option value="{{ $bus_conductor->id }}" selected>{{ $bus_conductor->name }}</option>
-                                            @else
-                                            <option value="{{ $bus_conductor->id }}">{{ $bus_conductor->name }}</option>
-                                            @endif
-                                            @endforeach
-                                        </select>
-                                        @if (Auth::user()->hasRole('Upt'))
-                                        <div class="input-group-append">
-                                            <span class="ml-2 text-primary" style="font-size: 12px; cursor: pointer;" onclick="location.href='{{ route('bus_conductors.create') }}'">
-                                                klik disini untuk menambah Kondektur
                                             </span>
                                         </div>
                                         @endif
