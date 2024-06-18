@@ -21,7 +21,7 @@ class TrackBusController extends Controller
         if (!$bus) {
             return response()->json([
                 'message' => 'Bus not found'
-            ], 404);
+            ], 400);
         }
 
         $trackBus = track_bus::where('bus_id', $bus->id)->first();

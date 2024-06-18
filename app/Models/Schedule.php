@@ -12,6 +12,7 @@ class Schedule extends Model
     protected $table = 'schedules';
     protected $fillable = [
         'bus_id',
+        'id_driver',
         'from_station_id',
         'to_station_id',
         'price',
@@ -47,6 +48,10 @@ class Schedule extends Model
     public function toStation()
     {
         return $this->belongsTo(BusStation::class, 'to_station_id');
+    }
+
+    public function driver() {
+        return $this->belongsTo(DriverConductorBus::class, 'id_driver');
     }
 
     public function scopeWhereFromStation(Builder $builder, $fromStation)

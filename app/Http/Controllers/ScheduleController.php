@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Buss;
 use App\Models\BusStation;
+use App\Models\DriverConductorBus;
 use App\Models\Schedule;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -51,13 +52,20 @@ class ScheduleController extends Controller
                 'minutes' => 'required|integer|min:0|max:59',
             ]);
 
+            
+
             // Simpan jadwal baru ke database
             foreach ($request->busses as $key => $busId) {
                 // Periksa apakah bus_id tidak kosong
                 if (!empty($busId)) {
+                    $driver_id = DriverConductorBus::where('bus_id', $busId)->first();
+                    if (!$driver_id) {
+                        return back()->with('error', 'Driver dan Conductor belum ditentukan');
+                    }
 
                     Schedule::create([
                         'bus_id' => $busId,
+                        'id_driver' => $driver_id->id,
                         'from_station_id' => $request->frombusStations[$key],
                         'to_station_id' => $request->tobusStations[$key],
                         'price' => $request->price,

@@ -17,7 +17,7 @@ class DriverConductorBus extends Model
         'bus_id',
     ];
 
-    public function driver()
+    public function drivers()
     {
         return $this->belongsTo(User::class, 'driver_id');
     }

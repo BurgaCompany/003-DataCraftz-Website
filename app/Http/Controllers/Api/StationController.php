@@ -14,7 +14,7 @@ class StationController extends Controller
             $station = BusStation::all();
             if ($station->isEmpty()) {
                 return response()->json([
-                    'status' => 404,
+                    'status' => 400,
                     'message' => 'Data not found!',
                 ]);
             }

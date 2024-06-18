@@ -57,13 +57,8 @@ class DriverAttendanceController extends Controller
             }
 
             $bus->save();
-
-            // return $this->responseFormatter->setStatusCode(200)
-            //     ->setMessage('Bus status updated successfully!')
-            //     ->setResult(['bus' => $bus])
-            //     ->format();
             return response()->json([
-                'statusCode' => 201,
+                'statusCode' => 200,
                 'message' => 'Success!',
                 'result' => $bus,
             ], 201);

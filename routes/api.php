@@ -3,9 +3,12 @@
 use App\Http\Controllers\Api\Auth\AuthController;
 use App\Http\Controllers\Api\ScheduleController;
 use App\Http\Controllers\Api\DriverAttendanceController;
+use App\Http\Controllers\Api\DriverReviewController;
 use App\Http\Controllers\Api\MidtransController;
+use App\Http\Controllers\Api\ReservationController;
 use App\Http\Controllers\Api\StationController;
 use App\Http\Controllers\Api\TrackBusController;
+use App\Http\Controllers\DriverController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -52,6 +55,14 @@ Route::group(['namespace' => 'tracking'], function () {
     Route::post('tracking-bus', [TrackBusController::class, 'updateLocation']);
 });
 
+Route::group(['namespace' => 'review'], function () {
+    Route::post('review-rating', [DriverReviewController::class, 'rating']);
+});
+
+Route::group(['namespace' => 'reservation'], function () {
+    Route::get('reservation-goon', [ReservationController::class, 'ReservationGoOn']);
+    Route::get('reservation-history', [ReservationController::class, 'ReservationHistory']);
+});
 
 
 Route::put('Driver/status/{id}', [DriverAttendanceController::class, 'updateStatus']);

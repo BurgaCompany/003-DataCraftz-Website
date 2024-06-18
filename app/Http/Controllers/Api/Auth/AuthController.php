@@ -28,7 +28,6 @@ class AuthController extends Controller
             'email' => 'required|string|email|unique:users',
             'password' => 'required|string|min:6',
             'address' => 'required|string',
-            'gender' => 'required|in:male,female',
             'phone_number' => 'required|string',
         ]);
 
@@ -55,7 +54,7 @@ class AuthController extends Controller
             $user->assignRole($role);
 
             return response()->json([
-                'statusCode' => 201,
+                'statusCode' => 200,
                 'message' => 'Success!',
                 'role' => $role->name,
                 'result' => $user,
@@ -86,7 +85,7 @@ class AuthController extends Controller
 
                 if ($role === 'driver') {
                     return response()->json([
-                        'statusCode' => 401,
+                        'statusCode' => 400,
                         'message' => 'Invalid credentials!',
                         'result' => ['error' => 'Driver cannot login via this route.']
                     ], 400);
@@ -112,7 +111,7 @@ class AuthController extends Controller
         }
 
         return response()->json([
-            'statusCode' => 401,
+            'statusCode' => 400,
             'message' => 'Invalid credentials!',
             'result' => ['error' => 'Unauthorized']
         ], 401);
@@ -132,7 +131,7 @@ class AuthController extends Controller
                     ->format();
             } else {
 
-                return $this->responseFormatter->setStatusCode(401)
+                return $this->responseFormatter->setStatusCode(400)
                     ->setMessage('User not authenticated')
                     ->format();
             }

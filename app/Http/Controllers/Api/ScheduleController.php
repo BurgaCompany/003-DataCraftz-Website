@@ -26,7 +26,7 @@ class ScheduleController extends Controller
     public function index(Request $request)
     {
         try {
-            $schedules = Schedule::with(['bus', 'fromStation', 'toStation'])->get();
+            $schedules = Schedule::with(['bus', 'fromStation', 'toStation', 'driver'])->get();
 
             return response()->json([
                 'statusCode' => 200,
@@ -305,7 +305,7 @@ class ScheduleController extends Controller
         }
 
         if ($date_departure == $date_now) {
-            $schedule_byDate = Schedule::with(['bus', 'fromStation', 'toStation'])
+            $schedule_byDate = Schedule::with(['bus', 'fromStation', 'toStation', 'driver'])
             ->whereFromStation($from_station_id)
             ->whereToStation($to_station_id)
             ->get();
@@ -325,7 +325,7 @@ class ScheduleController extends Controller
         }
 
         if ($reservation > 0) {
-            $schedule_byDate = Schedule::with(['bus', 'fromStation', 'toStation'])
+            $schedule_byDate = Schedule::with(['bus', 'fromStation', 'toStation', 'driver'])
             ->whereFromStation($from_station_id)
             ->whereToStation($to_station_id)
             ->get();

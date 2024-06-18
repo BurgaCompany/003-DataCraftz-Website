@@ -20,9 +20,9 @@ return new class extends Migration
             $table->foreignId('schedule_id');
             $table->integer('tickets_booked');
             $table->date('date_departure');
+            $table->integer('total_price')->default(0);
             $table->enum('status', [1, 2]);
             $table->timestamps();
-
             $table->foreign('user_id')->references('id')->on('users');
             $table->foreign('bus_id')->references('id')->on('busses');
             $table->foreign('schedule_id')->references('id')->on('schedules');

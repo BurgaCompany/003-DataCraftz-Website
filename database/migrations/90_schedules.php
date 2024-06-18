@@ -16,6 +16,7 @@ return new class extends Migration
         Schema::create('schedules', function (Blueprint $table) {
             $table->id();
             $table->foreignId('bus_id');
+            $table->foreignId('id_driver');
             $table->foreignId('from_station_id');
             $table->foreignId('to_station_id');
             $table->double('price');
@@ -24,6 +25,7 @@ return new class extends Migration
             $table->timestamps();
 
             $table->foreign('bus_id')->references('id')->on('busses')->onDelete('cascade');
+            $table->foreign('id_driver')->references('id')->on('driver_conductor_bus')->onDelete('cascade');
             $table->foreign('from_station_id')->references('id')->on('bus_stations')->onDelete('cascade');
             $table->foreign('to_station_id')->references('id')->on('bus_stations')->onDelete('cascade');
         });

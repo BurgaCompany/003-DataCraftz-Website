@@ -18,6 +18,7 @@ class FindScheduleResource extends JsonResource
         return [
             'id' => $this->id,
             'bus' => $this->bus->name,
+            'bus_id' => $this->bus->id,
             'chair' => $this->bus->chair,
             'from_station' => $this->fromStation->name,
             'to_station' => $this->toStation->name,
