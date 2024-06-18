@@ -64,7 +64,7 @@ Route::middleware(['role:PO'])->group(function () {
     Route::put('/busses/{id}', [BussesController::class, 'update'])->name('busses.update');
     Route::get('/busses/filter', [BussesController::class, 'filter'])->name('busses.filter');
 
-    Route::get('/busses/{id}/track', [BussesController::class, 'track'])->name('busses.track');
+    Route::get('/api/bus-coordinates/{id}', [BussesController::class, 'getCoordinates']);
 });
 
 

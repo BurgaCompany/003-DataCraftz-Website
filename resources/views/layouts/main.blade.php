@@ -138,7 +138,7 @@
         <script src="../../assets/js/custom.js"></script>
         
         <script src="../../assets/js/map.js"></script>
-        <script src="../../assets/js/track.js"></script>
+        {{-- <script src="../../assets/js/track.js"></script> --}}
         <script src="../../assets/js/search.js"></script>
         <script src="../../assets/js/valid_busstat.js"></script>
         {{-- <script src="../../assets/js/disabled.js"></script> --}}
@@ -146,8 +146,71 @@
         <script src="../../assets/js/status.js"></script>
         <script src="../../assets/js/upload.js"></script>
         <script src="../../assets/js/select.js"></script>
+
+        
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+            var busId = {{ $bus->id }}; // Ambil bus ID dari server-side variable
+
+            // Function to fetch coordinates from the server
+            function fetchCoordinates() {
+                fetch('/api/bus-coordinates/' + busId)
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log('Fetched coordinates:', data); // Log data untuk debugging
+
+                        if (data) {
+                            // Inisialisasi peta dengan koordinat dari database
+                            var map = L.map("track_map").setView([data.latitude, data.longitude], 12);
+
+                            // Add OpenStreetMap tile layer to the map
+                            L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+                                maxZoom: 19,
+                            }).addTo(map);
+
+                            // Create a bus icon
+                            var busIcon = L.icon({
+                                iconUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png",
+                                iconSize: [25, 41],
+                                iconAnchor: [12, 41],
+                                popupAnchor: [1, -34],
+                                shadowSize: [41, 41],
+                            });
+
+                            // Create a marker with the bus icon
+                            var marker = L.marker([data.latitude, data.longitude], { icon: busIcon }).addTo(map);
+
+                            // Function to update marker position
+                            function updateMarker() {
+                                fetch('/api/bus-coordinates/' + busId)
+                                    .then(response => response.json())
+                                    .then(data => {
+                                        console.log('Updated coordinates:', data); // Log data untuk debugging
+
+                                        if (data) {
+                                            var newLatLng = L.latLng(data.latitude, data.longitude);
+                                            marker.setLatLng(newLatLng);
+
+                                            // Set the map view to the new marker position
+                                            map.setView(newLatLng, map.getZoom());
+                                        }
+                                    })
+                                    .catch(error => console.error('Error fetching coordinates:', error));
+                            }
+
+                            // Fetch coordinates every 10 seconds
+                            setInterval(updateMarker, 10000);
+                        }
+                    })
+                    .catch(error => console.error('Error fetching coordinates:', error));
+            }
+
+            // Initial fetch to set the marker position immediately
+            fetchCoordinates();
+        });
+        </script>
+
        <!-- Pastikan $userRegistrations telah disertakan sebelum script -->
-      
        @if(Route::currentRouteName() == 'dashboard' || Route::currentRouteName() == 'dashboard_po')
     <script src="../../assets/js/dashboard.js"></script>
     <script>

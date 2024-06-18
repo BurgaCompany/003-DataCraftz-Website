@@ -16,24 +16,11 @@ use Illuminate\Support\Facades\DB;
 
 class BussesController extends Controller
 {
-    public function track($id)
+    public function getCoordinates($id)
     {
-        // Ambil data track terbaru dari model TrackBus berdasarkan bus_id
-        $trackData = TrackBus::where('bus_id', $id)
-            ->latest()
-            ->first();
-
-        if (!$trackData) {
-            return response()->json([
-                'latitude' => 0,
-                'longitude' => 0,
-            ]);
-        }
-
-        return response()->json([
-            'latitude' => $trackData->latitude,
-            'longitude' => $trackData->longitude,
-        ]);
+        // Mengambil koordinat terbaru dari tabel 'track_bus' berdasarkan 'bus_id'
+        $coordinates = TrackBus::where('bus_id', $id)->orderBy('created_at', 'desc')->first();
+        return response()->json($coordinates);
     }
 
     public function index()
