@@ -148,6 +148,7 @@
         <script src="../../assets/js/select.js"></script>
 
         
+        @if(Route::currentRouteName() == 'busses.detail')
         <script>
             document.addEventListener("DOMContentLoaded", function () {
             var busId = {{ $bus->id }}; // Ambil bus ID dari server-side variable
@@ -209,6 +210,7 @@
             fetchCoordinates();
         });
         </script>
+        @endif
 
        <!-- Pastikan $userRegistrations telah disertakan sebelum script -->
        @if(Route::currentRouteName() == 'dashboard' || Route::currentRouteName() == 'dashboard_po')
