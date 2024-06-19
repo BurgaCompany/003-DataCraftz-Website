@@ -1,0 +1,33 @@
+<?php
+
+namespace App\Http\Resources;
+
+use Illuminate\Http\Resources\Json\JsonResource;
+
+class ReservationResource extends JsonResource
+{
+    /**
+     * Transform the resource into an array.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return array|\Illuminate\Contracts\Support\Arrayable|\JsonSerializable
+     */
+    public function toArray($request)
+    {
+        return [
+            'order_id' => $this->order_id,
+            'user_name' => $this->user->name,
+            'schedule_from_station' => $this->schedule->fromStation->name,
+            'schedule_from_station_code_name' => $this->schedule->fromStation->code_name,
+            'schedule_to_station_code_name' => $this->schedule->toStation->code_name,
+            'schedule_pwt' => $this->schedule->pwt,
+            'bus_class' => $this->bus->class,
+            'schedule_price' => $this->schedule->price,
+            'schedule_time_start' => $this->schedule->time_start,
+            'license_plate_number' => $this->bus->license_plate_number,
+            'tickets_booked' => $this->tickets_booked,
+            'date_departure' => $this->date_departure,
+            'status' => $this->status,
+        ];
+    }
+}

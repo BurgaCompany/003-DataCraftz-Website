@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\ReservationResource;
 use App\Models\Reservation;
 use Illuminate\Http\Request;
 
@@ -77,5 +78,29 @@ class ReservationController extends Controller
         }
     }
 
-
+    public function getReservationById(Request $request)
+    {
+        $user_id = $request->query('user_id');
+        $id = $request->query('reservation_id');
+        try {
+            $reservation = Reservation::with(['schedule', 'user', 'bus'])->where('user_id', $user_id)->where('id', $id)->first();
+            if (!$reservation) {
+                return response()->json([
+                    'statusCode' => 400,
+                    'message' => 'Data not found!',
+                ], 400);
+            }
+            return response()->json([
+                'statusCode' => 200,
+                'message' => 'Success!',
+                'result' => new ReservationResource($reservation)
+            ], 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'statusCode' => 500,
+                'message' => 'Error!',
+                'result' => $th->getMessage()
+            ], 500);
+        }
+    }
 }

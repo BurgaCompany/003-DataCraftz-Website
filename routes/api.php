@@ -62,6 +62,8 @@ Route::group(['namespace' => 'review'], function () {
 Route::group(['namespace' => 'reservation'], function () {
     Route::get('reservation-goon', [ReservationController::class, 'ReservationGoOn']);
     Route::get('reservation-history', [ReservationController::class, 'ReservationHistory']);
+    Route::get('reservation-detail', [ReservationController::class, 'getReservationById']);
+
 });
 
 

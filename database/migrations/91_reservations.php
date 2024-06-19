@@ -15,6 +15,7 @@ return new class extends Migration
     {
         Schema::create('reservations', function (Blueprint $table) {
             $table->id();
+            $table->string('order_id', 15)->nullable(true);
             $table->foreignId('user_id');
             $table->foreignId('bus_id');
             $table->foreignId('schedule_id');

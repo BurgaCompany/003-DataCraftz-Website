@@ -18,6 +18,7 @@ class MidtransController extends Controller
         $gross_amount = $request->total_price;
         
         $reservation = new Reservation();
+        $reservation->order_id = $request->order_id;
         $reservation->user_id = $request->user_id;
         $reservation->bus_id = $request->bus_id;
         $reservation->schedule_id = $request->schedule_id;
