@@ -19,7 +19,9 @@ return new class extends Migration
             $table->foreignId('id_driver');
             $table->foreignId('from_station_id');
             $table->foreignId('to_station_id');
-            $table->double('price');
+            $table->double('min_price');
+            $table->double('max_price');
+            $table->double('price')->nullable();
             $table->time('time_start');
             $table->string('pwt');
             $table->timestamps();

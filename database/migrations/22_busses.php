@@ -18,8 +18,8 @@ return new class extends Migration
             $table->string('name');
             $table->string('license_plate_number', 13); // maksimal 13 karakter
             $table->integer('chair')->unsigned(); // maksimal 2 kursi
-            $table->enum('class', ['ekonomi', 'bisnis']); // pilihan ekonomi atau bisnis
-            $table->enum('status', [1, 2, 3, 4, 5])->default(1); // Default status adalah 1 (Belum Berangkat)
+            $table->enum('class', ['Ekonomi', 'Patas']); // pilihan ekonomi atau bisnis
+            $table->enum('status', ['Belum Berangkat', 'Berangkat', 'Terkendala', 'Sampai di tujuan'])->default('Belum Berangkat');
             $table->string('information')->nullable(); // Field untuk keterangan tambahan jika status adalah 4
             $table->string('images')->nullable();
             $table->unsignedBigInteger('id_po')->nullable();

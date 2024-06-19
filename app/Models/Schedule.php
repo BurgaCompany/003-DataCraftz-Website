@@ -15,6 +15,8 @@ class Schedule extends Model
         'id_driver',
         'from_station_id',
         'to_station_id',
+        'min_price',
+        'max_price',
         'price',
         'time_start',
         'pwt',
@@ -50,7 +52,8 @@ class Schedule extends Model
         return $this->belongsTo(BusStation::class, 'to_station_id');
     }
 
-    public function driver() {
+    public function driver()
+    {
         return $this->belongsTo(DriverConductorBus::class, 'id_driver');
     }
 
