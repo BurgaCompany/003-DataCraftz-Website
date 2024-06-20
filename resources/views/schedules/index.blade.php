@@ -72,7 +72,7 @@
                                         <th>Terminal Tujuan</th>
                                         <th>Rentang Harga</th>
                                         <th>Jam Berangkat</th>
-                                        <th>Perkiraan Waktu Tempuh</th>
+                                        <th>Jam Tiba</th>
                                         <th>Tanggal Dibuat</th>
                                         <th>Aksi</th>
                                     </tr>
@@ -92,7 +92,7 @@
                                         <td>{{ $schedule->toStation->name }}</td>
                                         <td>{{ number_format($schedule->min_price, 0, ',', '.') }} - {{ number_format($schedule->max_price, 0, ',', '.') }}</td>
                                         <td>{{ $schedule->time_start }}</td>
-                                        <td>{{ $schedule->duration }}</td>
+                                        <td>{{ $schedule->time_arrive }}</td>
                                         <td>{{ $schedule->created_at }}</td>
                                         <td>
                                             <div class="btn-group" role="group" aria-label="Basic example">

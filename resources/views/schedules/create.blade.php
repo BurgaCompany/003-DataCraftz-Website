@@ -99,19 +99,9 @@
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label for="pwt">Perkiraan Waktu Tempuh</label>
-                                            <div class="input-group">
-                                                <input type="number" class="form-control" name="hours" id="hours" placeholder="Jam" required value="{{ old('hours') }}" min="0">
-                                                <div class="input-group-append">
-                                                    <span class="input-group-text">Jam</span>
-                                                </div>
-                                                <input type="number" class="form-control" name="minutes" id="minutes" placeholder="Menit" required value="{{ old('minutes') }}" min="0" max="59">
-                                                <div class="input-group-append">
-                                                    <span class="input-group-text">Menit</span>
-                                                </div>
-                                            </div>
+                                            <label for="time_arrive">Jam Tiba</label>
+                                            <input type="time" class="form-control" name="time_arrive" id="time_arrive" required value="{{ old('time_arrive') }}">
                                         </div>
-                                    </div>
                                 </div>
                                 <!-- Button trigger modal -->
                                 <button type="button" class="btn btn-primary float-left mr-2" data-toggle="modal" data-target="#exampleModal">

@@ -23,7 +23,7 @@ return new class extends Migration
             $table->double('max_price');
             $table->double('price')->nullable();
             $table->time('time_start');
-            $table->string('pwt');
+            $table->time('time_arrive');
             $table->timestamps();
 
             $table->foreign('bus_id')->references('id')->on('busses')->onDelete('cascade');

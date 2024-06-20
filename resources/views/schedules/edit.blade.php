@@ -107,18 +107,12 @@
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label for="pwt">Perkiraan Waktu Tempuh</label>
-                                            <div class="input-group">
-                                                <input type="number" class="form-control" name="hours" id="hours" placeholder="Jam" required value="{{ floor($schedules->pwt / 60) }}" {{ Auth::user()->hasRole('PO') ? 'disabled' : '' }}>
-                                                <div class="input-group-append">
-                                                    <span class="input-group-text">Jam</span>
-                                                </div>
-                            
-                                                <input type="number" class="form-control" name="minutes" id="minutes" placeholder="Menit" required value="{{ $schedules->pwt % 60 }}" min="0" max="59" {{ Auth::user()->hasRole('PO') ? 'disabled' : '' }}>
-                                                <div class="input-group-append">
-                                                    <span class="input-group-text">Menit</span>
-                                                </div>
-                                            </div>
+                                            <label for="time_arrive">Jam Tiba</label>
+                                            @php
+                                                $timeStart = \Carbon\Carbon::parse($schedules->time_arrive);
+                                                $formattedTime = $timeStart->format('H:i');
+                                            @endphp
+                                            <input type="time" class="form-control" name="time_arrive" id="time_arrive" required value="{{ $formattedTime }}" {{ Auth::user()->hasRole('PO') ? 'disabled' : '' }}>
                                         </div>
                                     </div>
                                 </div>

@@ -49,8 +49,7 @@ class ScheduleController extends Controller
                 'min_price' => 'required|numeric',
                 'max_price' => 'required|numeric',
                 'time_start' => 'required|date_format:H:i',
-                'hours' => 'required|integer|min:0',
-                'minutes' => 'required|integer|min:0|max:59',
+                'time_arrive' => 'required|date_format:H:i',
             ]);
 
             // Simpan jadwal baru ke database
@@ -71,7 +70,7 @@ class ScheduleController extends Controller
                         'max_price' => $request->max_price,
                         'price' => $request->price,
                         'time_start' => $request->time_start,
-                        'pwt' => $request->hours * 60 + $request->minutes,
+                        'time_arrive' => $request->time_arrive,
                         'created_at' => Carbon::now(),
                     ]);
                 }
@@ -118,8 +117,7 @@ class ScheduleController extends Controller
                 'max_price' => 'numeric',
                 'price' => 'nullable|numeric',
                 'time_start' => 'date_format:H:i',
-                'hours' => 'integer|min:0',
-                'minutes' => 'integer|min:0|max:59',
+                'time_arrive' => 'date_format:H:i',
             ]);
 
             // Check if the price field is filled
@@ -137,7 +135,7 @@ class ScheduleController extends Controller
                     'min_price' => $request->input('min_price'),
                     'max_price' => $request->input('max_price'),
                     'time_start' => $request->input('time_start'),
-                    'pwt' => $request->input('hours') * 60 + $request->input('minutes'),
+                    'time_arrive' => $request->input('time_arrive'),
                 ]);
             }
 

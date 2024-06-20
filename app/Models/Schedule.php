@@ -19,7 +19,7 @@ class Schedule extends Model
         'max_price',
         'price',
         'time_start',
-        'pwt',
+        'time_arrive',
     ];
 
     public function getDurationAttribute()
