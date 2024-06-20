@@ -15,16 +15,37 @@ class FindScheduleResource extends JsonResource
      */
     public function toArray($request)
     {
+        $start = new \DateTime($this->time_start);
+        $end = new \DateTime($this->time_arrive);
+
+        // Periksa apakah waktu kedatangan lebih awal dari waktu keberangkatan
+        if ($end < $start) {
+            $end->modify('+1 day');
+        }
+
+        // Menghitung selisih waktu
+        $interval = $start->diff($end);
+
+        // Menghitung total jam dan menit termasuk perbedaan hari
+        $totalHours = $interval->days * 24 + $interval->h;
+        $totalMinutes = $interval->i;
+
+        // Format hasil perhitungan waktu
+        $pwt = sprintf('%d jam %d menit', $totalHours, $totalMinutes);
+
         return [
             'id' => $this->id,
             'bus' => $this->bus->name,
             'bus_id' => $this->bus->id,
+            'driver_id' => $this->driver->drivers->id,
+            'driver_name' => $this->driver->drivers->name,
             'chair' => $this->bus->chair,
             'from_station' => $this->fromStation->name,
             'to_station' => $this->toStation->name,
             'price' => $this->price,
             'time_start' => $this->time_start,
-            'pwt' => sprintf("%d jam : %02d menit", floor($this->pwt / 60), $this->pwt % 60),
+            'time_arrive' => $this->time_arrive,
+            'pwt' => $pwt,
             'create_at' => $this->created_at,
             'update_at' => $this->updated_at,
         ];
