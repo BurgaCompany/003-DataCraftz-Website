@@ -39,7 +39,7 @@ class DriverAttendanceController extends Controller
                 return response()->json([
                     'statusCode' => 400,
                     'message' => 'Error!',
-                    'result' => ['errors' => $validator->errors()]
+                    'data_driver_attendace' => ['errors' => $validator->errors()]
                 ],
                     400
                 );
@@ -60,13 +60,13 @@ class DriverAttendanceController extends Controller
             return response()->json([
                 'statusCode' => 200,
                 'message' => 'Success!',
-                'result' => $bus,
+                'data_driver_attendace' => $bus,
             ], 201);
         } catch (\Exception $e) {
             return response()->json([
                 'statusCode' => 500,
                 'message' => 'An error occurred while processing your request.',
-                'result' => ['error' => $e->getMessage()]
+                'data_driver_attendace' => ['error' => $e->getMessage()]
             ], 500);
         }
     }
