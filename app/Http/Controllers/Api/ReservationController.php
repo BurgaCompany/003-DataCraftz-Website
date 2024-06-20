@@ -24,7 +24,7 @@ class ReservationController extends Controller
         return response()->json([
             'statusCode' => 200,
             'message' => 'Success!',
-            'result' => $reservation
+            'data_reservation' => $reservation
         ], 200);
     }
 
@@ -42,13 +42,13 @@ class ReservationController extends Controller
             return response()->json([
                 'statusCode' => 200,
                 'message' => 'Success!',
-                'result' => $reservation
+                'data_reservation' => $reservation
             ], 200);
         } catch (\Throwable $th) {
             return response()->json([
                 'statusCode' => 500,
                 'message' => 'Error!',
-                'result' => $th->getMessage()
+                'data_reservation' => $th->getMessage()
             ], 500);
         }
     }
@@ -67,13 +67,13 @@ class ReservationController extends Controller
             return response()->json([
                 'statusCode' => 200,
                 'message' => 'Success!',
-                'result' => $reservation
+                'data_reservation' => $reservation
             ], 200);
         } catch (\Throwable $th) {
             return response()->json([
                 'statusCode' => 500,
                 'message' => 'Error!',
-                'result' => $th->getMessage()
+                'data_reservation' => $th->getMessage()
             ], 500);
         }
     }
@@ -93,13 +93,13 @@ class ReservationController extends Controller
             return response()->json([
                 'statusCode' => 200,
                 'message' => 'Success!',
-                'result' => new ReservationResource($reservation)
+                'data_reservation' => new ReservationResource($reservation)
             ], 200);
         } catch (\Throwable $th) {
             return response()->json([
                 'statusCode' => 500,
                 'message' => 'Error!',
-                'result' => $th->getMessage()
+                'data_reservation' => $th->getMessage()
             ], 500);
         }
     }

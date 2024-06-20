@@ -21,13 +21,13 @@ class StationController extends Controller
             return response()->json([
                 'status' => 200,
                 'message' => 'Success',
-                'data' => StationResource::collection($station)
+                'data_station' => StationResource::collection($station)
             ]);
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => 500,
                 'message' => 'Error',
-                'data' => $th->getMessage()
+                'data_station' => $th->getMessage()
             ]);
         }
 

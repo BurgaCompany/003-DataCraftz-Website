@@ -27,7 +27,7 @@ class DriverReviewController extends Controller
             return response()->json([
                 'statusCode' => 400,
                 'message' => 'Error!',
-                'result' => ['errors' => $validate->errors()]
+                'data_driver' => ['errors' => $validate->errors()]
             ], 400);
         }
 
@@ -41,13 +41,13 @@ class DriverReviewController extends Controller
             return response()->json([
                 'statusCode' => 200,
                 'message' => 'Success!',
-                'result' => $review
+                'data_rating' => $review
             ], 200);
         } catch (\Throwable $th) {
             return response()->json([
                 'statusCode' => 500,
                 'message' => 'Error!',
-                'result' => $th->getMessage()
+                'data_rating' => $th->getMessage()
             ], 500);
         }
     }

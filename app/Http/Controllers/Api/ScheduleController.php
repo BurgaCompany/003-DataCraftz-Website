@@ -31,13 +31,13 @@ class ScheduleController extends Controller
             return response()->json([
                 'statusCode' => 200,
                 'message' => 'Success!',
-                'result' =>  $schedules
+                'data_schedule' =>  $schedules
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'statusCode' => 500,
                 'message' => 'Error!',
-                'result' => ['errors' => $e->getMessage()]
+                'data_schedule' => ['errors' => $e->getMessage()]
             ]);
         }
     }
@@ -56,13 +56,13 @@ class ScheduleController extends Controller
             return response()->json([
                 'statusCode' => 200,
                 'message' => 'Success!',
-                'result' => $busses
+                'data_schedule' => $busses
             ]);
         } catch (\Throwable $th) {
             return response()->json([
                 'statusCode' => 500,
                 'message' => 'Error!',
-                'result' =>  $th->getMessage()
+                'data_schedule' =>  $th->getMessage()
             ]);
         }
     }
@@ -80,7 +80,7 @@ class ScheduleController extends Controller
                 return response()->json([
                     'statusCode' => 400,
                     'message' => 'Validation Error!',
-                    'result' => ['errors' => $validator->errors()]
+                    'data_schedule' => ['errors' => $validator->errors()]
                 ], 400);
             }
 
@@ -90,7 +90,7 @@ class ScheduleController extends Controller
                 return response()->json([
                     'statusCode' => 401,
                     'message' => 'Unauthenticated',
-                    'result' => ['error' => 'Unauthenticated']
+                    'data_schedule' => ['error' => 'Unauthenticated']
                 ], 401);
             }
 
@@ -101,7 +101,7 @@ class ScheduleController extends Controller
                 return response()->json([
                     'statusCode' => 404,
                     'message' => 'Schedule Not Found',
-                    'result' => ['error' => 'Schedule not found']
+                    'data_schedule' => ['error' => 'Schedule not found']
                 ], 404);
             }
 
@@ -112,7 +112,7 @@ class ScheduleController extends Controller
                 return response()->json([
                     'statusCode' => 404,
                     'message' => 'Bus Not Found',
-                    'result' => ['error' => 'Bus not found']
+                    'data_schedule' => ['error' => 'Bus not found']
                 ], 404);
             }
 
@@ -121,7 +121,7 @@ class ScheduleController extends Controller
                 return response()->json([
                     'statusCode' => 400,
                     'message' => 'Not Enough Chairs',
-                    'result' => ['error' => 'Not enough chairs available']
+                    'data_schedule' => ['error' => 'Not enough chairs available']
                 ], 400);
             }
 
@@ -157,13 +157,13 @@ class ScheduleController extends Controller
             return response()->json([
                 'statusCode' => 201,
                 'message' => 'Reservation Successful!',
-                'result' => $reservation
+                'data_schedule' => $reservation
             ], 201);
         } catch (\Exception $e) {
             return response()->json([
                 'statusCode' => 500,
                 'message' => 'Error!',
-                'result' => ['error' => $e->getMessage()]
+                'data_schedule' => ['error' => $e->getMessage()]
             ], 500);
         }
     }
@@ -181,7 +181,7 @@ class ScheduleController extends Controller
                 return response()->json([
                     'statusCode' => 400,
                     'message' => 'Validation Error!',
-                    'result' =>  $validator->errors()
+                    'data_schedule' =>  $validator->errors()
                 ], 400);
             }
 
@@ -191,7 +191,7 @@ class ScheduleController extends Controller
                 return response()->json([
                     'statusCode' => 401,
                     'message' => 'Unauthenticated',
-                    'result' =>  'Unauthenticated'
+                    'data_schedule' =>  'Unauthenticated'
                 ], 401);
             }
 
@@ -209,7 +209,7 @@ class ScheduleController extends Controller
             return response()->json([
                 'statusCode' => 500,
                 'message' => 'Error!',
-                'result' =>  $e->getMessage()
+                'data_schedule' =>  $e->getMessage()
             ], 500);
         }
     }
@@ -234,13 +234,13 @@ class ScheduleController extends Controller
             return response()->json([
                 'statusCode' => 200,
                 'message' => 'Success!',
-                'result' =>  $schedules
+                'data_schedule' =>  $schedules
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'statusCode' => 500,
                 'message' => 'Error!',
-                'result' =>  $e->getMessage()
+                'data_schedule' =>  $e->getMessage()
             ]);
         }
     }
@@ -273,13 +273,13 @@ class ScheduleController extends Controller
             return response()->json([
                 'statusCode' => 200,
                 'message' => 'Success!',
-                'result' =>  $reservations
+                'data_schedule' =>  $reservations
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'statusCode' => 500,
                 'message' => 'Error!',
-                'result' =>  $e->getMessage()
+                'data_schedule' =>  $e->getMessage()
             ]);
         }
     }
@@ -312,7 +312,7 @@ class ScheduleController extends Controller
             return response()->json([
                 'statusCode' => 200,
                 'message' => 'Success!',
-                'result' => $schedule_byDate->map(function ($schedule) use ($date_departure) {
+                'data_schedule' => $schedule_byDate->map(function ($schedule) use ($date_departure) {
                     return new FindScheduleByDateResource($schedule, $date_departure);
                 })
             ]);
@@ -332,7 +332,7 @@ class ScheduleController extends Controller
             return response()->json([
                 'statusCode' => 200,
                 'message' => 'Success!',
-                'result' => $schedule_byDate->map(function ($schedule) use ($date_departure) {
+                'data_schedule' => $schedule_byDate->map(function ($schedule) use ($date_departure) {
                     return new FindScheduleByDateResource($schedule, $date_departure);
                 })
             ]);
@@ -341,7 +341,7 @@ class ScheduleController extends Controller
         return response()->json([
             'statusCode' => 200,
             'message' => 'Success!',
-            'result' =>  FindScheduleResource::collection($schedule)
+            'data_schedule' =>  FindScheduleResource::collection($schedule)
         ]);
     }
 }
