@@ -87,17 +87,7 @@
                                         <td>{{ preg_replace('/([a-zA-Z])([0-9]+)/', '$1 $2 ', $bus->license_plate_number) }}</td>
                                         <td>{{ $bus->class }}</td>
                                         <td>
-                                            @if ($bus->status == 1)
-                                                <span class="badge badge-primary">Belum Berangkat</span>
-                                            @elseif ($bus->status == 2)
-                                                <span class="badge badge-warning">Bersedia Berangkat</span>
-                                            @elseif ($bus->status == 3)
-                                                <span class="badge badge-success">Berangkat</span>
-                                            @elseif ($bus->status == 4)
-                                                <span class="badge badge-danger">Terkendala</span>
-                                            @elseif ($bus->status == 5)
-                                                <span class="badge badge-info">Tiba di Tujuan</span>
-                                            @endif
+                                            {{ $bus->status }}
                                         </td>
                                         <td>{{ $bus->driver_name ?: '-'}}</td>
                                         

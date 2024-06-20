@@ -46,13 +46,12 @@ class ScheduleController extends Controller
                 'busses.*' => 'required|exists:busses,id',
                 'frombusStations.*' => 'required|exists:bus_stations,id',
                 'tobusStations.*' => 'required|exists:bus_stations,id|different:frombusStations.*',
-                'price' => 'required|numeric',
+                'min_price' => 'required|numeric',
+                'max_price' => 'required|numeric',
                 'time_start' => 'required|date_format:H:i',
                 'hours' => 'required|integer|min:0',
                 'minutes' => 'required|integer|min:0|max:59',
             ]);
-
-            
 
             // Simpan jadwal baru ke database
             foreach ($request->busses as $key => $busId) {
@@ -60,7 +59,7 @@ class ScheduleController extends Controller
                 if (!empty($busId)) {
                     $driver_id = DriverConductorBus::where('bus_id', $busId)->first();
                     if (!$driver_id) {
-                        return back()->with('error', 'Driver dan Conductor belum ditentukan');
+                        return back()->with('error', 'Driver belum ditentukan');
                     }
 
                     Schedule::create([
@@ -68,6 +67,8 @@ class ScheduleController extends Controller
                         'id_driver' => $driver_id->id,
                         'from_station_id' => $request->frombusStations[$key],
                         'to_station_id' => $request->tobusStations[$key],
+                        'min_price' => $request->min_price,
+                        'max_price' => $request->max_price,
                         'price' => $request->price,
                         'time_start' => $request->time_start,
                         'pwt' => $request->hours * 60 + $request->minutes,
@@ -80,9 +81,6 @@ class ScheduleController extends Controller
         } catch (ValidationException $e) {
             // Tangkap pengecualian jika validasi gagal
             $errors = $e->validator->errors()->messages();
-
-            //dd($errors);
-            // Lakukan tindakan yang sesuai dengan pesan kesalahan lainnya
             return back()->withErrors($errors)->withInput();
         }
     }
@@ -116,21 +114,32 @@ class ScheduleController extends Controller
                 'busses.*' => 'required|exists:busses,id',
                 'frombusStations.*' => 'required|exists:bus_stations,id',
                 'tobusStations.*' => 'required|exists:bus_stations,id|different:frombusStations.*',
-                'price' => 'required|numeric',
-                'time_start' => 'required|date_format:H:i',
-                'hours' => 'required|integer|min:0',
-                'minutes' => 'required|integer|min:0|max:59',
+                'min_price' => 'numeric',
+                'max_price' => 'numeric',
+                'price' => 'nullable|numeric',
+                'time_start' => 'date_format:H:i',
+                'hours' => 'integer|min:0',
+                'minutes' => 'integer|min:0|max:59',
             ]);
 
-            // Update jadwal ke database
-            $schedule->update([
-                'bus_id' => $request->input('busses')[0], // Menggunakan hanya nilai pertama dari busses
-                'from_station_id' => $request->input('frombusStations')[0], // Menggunakan hanya nilai pertama dari frombusStations
-                'to_station_id' => $request->input('tobusStations')[0], // Menggunakan hanya nilai pertama dari tobusStations
-                'price' => $request->input('price'),
-                'time_start' => $request->input('time_start'),
-                'pwt' => $request->input('hours') * 60 + $request->input('minutes'),
-            ]);
+            // Check if the price field is filled
+            if ($request->filled('price')) {
+                // Update only the price field
+                $schedule->update([
+                    'price' => $request->input('price'),
+                ]);
+            } else {
+                // Update other fields if price is not filled
+                $schedule->update([
+                    'bus_id' => $request->input('busses')[0], // Menggunakan hanya nilai pertama dari busses
+                    'from_station_id' => $request->input('frombusStations')[0], // Menggunakan hanya nilai pertama dari frombusStations
+                    'to_station_id' => $request->input('tobusStations')[0], // Menggunakan hanya nilai pertama dari tobusStations
+                    'min_price' => $request->input('min_price'),
+                    'max_price' => $request->input('max_price'),
+                    'time_start' => $request->input('time_start'),
+                    'pwt' => $request->input('hours') * 60 + $request->input('minutes'),
+                ]);
+            }
 
             return redirect()->route('schedules.index')->with('message', 'Jadwal berhasil diperbarui');
         } catch (ValidationException $e) {
@@ -141,6 +150,7 @@ class ScheduleController extends Controller
             return back()->with('error', 'Terjadi kesalahan saat memperbarui jadwal')->withInput();
         }
     }
+
 
     public function destroyMulti(Request $request)
     {

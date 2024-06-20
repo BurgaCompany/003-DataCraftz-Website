@@ -54,18 +54,17 @@
                                         <div class="form-group">
                                             <label for="status">Status</label>
                                             <select class="js-states form-control" name="status" id="status" style="width: 100%" onchange="showKeterangan()" required disabled>
-                                                <option value="1" {{ old('status', $bus->status) == '1' ? 'selected' : '' }}>Belum Berangkat</option>
-                                                <option value="2" {{ old('status', $bus->status) == '2' ? 'selected' : '' }}>Bersedia Berangkat</option>
-                                                <option value="3" {{ old('status', $bus->status) == '3' ? 'selected' : '' }}>Berangkat</option>
-                                                <option value="4" {{ old('status', $bus->status) == '4' ? 'selected' : '' }}>Terkendala</option>
-                                                <option value="5" {{ old('status', $bus->status) == '5' ? 'selected' : '' }}>Tiba di Tujuan</option>
+                                                <option value="Belum Berangkat" {{ old('status', $bus->status) == 'Belum Berangkat<' ? 'selected' : '' }}>Belum Berangkat</option>
+                                                <option value="Berangkat" {{ old('status', $bus->status) == 'Berangkat' ? 'selected' : '' }}>Berangkat</option>
+                                                <option value="Terkendala" {{ old('status', $bus->status) == 'Terkendala' ? 'selected' : '' }}>Terkendala</option>
+                                                <option value="Sampai di Tujuan" {{ old('status', $bus->status) == 'Sampai di Tujuan' ? 'selected' : '' }}>Sampai di Tujuan</option>
                                             </select>
                                         </div>
                                     </div>
                                 </div>
                                 
                                 <div class="row">
-                                    <div class="col-md-12" id="keteranganField" style="{{ old('status', $bus->status) == '4' ? 'display:block;' : 'display:none;' }}">
+                                    <div class="col-md-12" id="keteranganField" style="{{ old('status', $bus->status) == 'Terkendala' ? 'display:block;' : 'display:none;' }}">
                                         <div class="form-group">
                                             <label for="keterangan">Keterangan</label>
                                             <textarea class="form-control" name="keterangan" id="keterangan" placeholder="Masukkan Keterangan" disabled>{{ old('keterangan', $bus->information) }}</textarea>
