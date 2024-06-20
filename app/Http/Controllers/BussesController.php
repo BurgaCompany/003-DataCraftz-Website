@@ -38,9 +38,11 @@ class BussesController extends Controller
                 $bussesQuery = DB::table('busses')
                     ->leftJoin('driver_conductor_bus', 'busses.id', '=', 'driver_conductor_bus.bus_id')
                     ->leftJoin('users as drivers', 'driver_conductor_bus.driver_id', '=', 'drivers.id')
+                    ->leftJoin('users as conductors', 'driver_conductor_bus.bus_conductor_id', '=', 'conductors.id')
                     ->select(
                         'busses.*',
                         'drivers.name as driver_name',
+                        'conductors.name as conductor_name'
                     )
                     ->whereNull('busses.deleted_at'); // Tambahkan klausa whereNull untuk mengecualikan data yang dihapus
 
@@ -95,8 +97,15 @@ class BussesController extends Controller
             ->whereDoesntHave('driverBus')
             ->where('id_po', $userId)
             ->get();
+
+        // Fetch all admins who have the role 'Admin' and meet certain conditions
+        $bus_conductors = User::role('Bus_Conductor')
+            ->whereDoesntHave('ConductorBus')
+            ->where('id_po', $userId)
+            ->get();
+
         // Pass the fetched data to the view
-        return view('busses.create', compact('drivers'));
+        return view('busses.create', compact('drivers', 'bus_conductors'));
     }
 
     public function store(Request $request)
@@ -111,6 +120,7 @@ class BussesController extends Controller
             'class' => 'required',
             'status' => 'required',
             'drivers' => 'nullable|array',
+            'bus_conductors' => 'nullable|array',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
@@ -174,13 +184,15 @@ class BussesController extends Controller
         $bus->save();
 
         // Menyimpan relasi antara driver dan bus conductor yang dipilih dan bus yang baru dibuat
-        if ($request->filled('drivers')) {
+        if ($request->filled('drivers') && $request->filled('bus_conductors')) {
             foreach ($request->drivers as $driverId) {
-
-                DriverConductorBus::create([
-                    'driver_id' => $driverId,
-                    'bus_id' => $bus->id,
-                ]);
+                foreach ($request->bus_conductors as $busConductorId) {
+                    DriverConductorBus::create([
+                        'driver_id' => $driverId,
+                        'bus_conductor_id' => $busConductorId,
+                        'bus_id' => $bus->id,
+                    ]);
+                }
             }
         }
 
@@ -202,6 +214,7 @@ class BussesController extends Controller
 
         $driveconduc = DriverConductorBus::where('bus_id', $bus->id)->get();
         $assignedDrivers = $driveconduc->pluck('driver_id')->toArray();
+        $assignedBusConductors = $driveconduc->pluck('bus_conductor_id')->toArray();
 
         // Retrieve drivers based on user role
         $driversQuery = User::role('Driver')
@@ -216,10 +229,28 @@ class BussesController extends Controller
             $driversQuery->where('id_po', $userId);
         }
         $drivers = $driversQuery->get();
+
+        // Retrieve bus conductors based on user role
+        $busConductorsQuery = User::role('Bus_Conductor')
+            ->where(function ($query) use ($bus) {
+                $query->whereHas('ConductorBus', function ($query) use ($bus) {
+                    $query->where('bus_id', $bus->id);
+                })->orWhereDoesntHave('ConductorBus');
+            });
+
+        // Add additional condition if the user is not an Admin
+        if (!$user->hasRole('Admin')) {
+            $busConductorsQuery->where('id_po', $userId);
+        }
+
+        $bus_conductors = $busConductorsQuery->get();
+
         return view('busses.detail', [
             'bus' => $bus,
             'drivers' => $drivers,
+            'bus_conductors' => $bus_conductors,
             'assignedDrivers' => $assignedDrivers,
+            'assignedBusConductors' => $assignedBusConductors
         ]);
     }
 
@@ -241,6 +272,7 @@ class BussesController extends Controller
 
         //dd($driveconduc);
         $assignedDrivers = $driveconduc->pluck('driver_id')->toArray();
+        $assignedBusConductors = $driveconduc->pluck('bus_conductor_id')->toArray();
         $drivers = User::role('Driver')
             ->where(function ($query) use ($bus) {
                 $query->whereHas('driverBus', function ($query) use ($bus) {
@@ -250,7 +282,16 @@ class BussesController extends Controller
             ->where('id_po', $userId)
             ->get();
 
-        return view('busses.edit', compact('bus', 'drivers',  'assignedDrivers'));
+        $bus_conductors = User::role('Bus_Conductor')
+            ->where(function ($query) use ($bus) {
+                $query->whereHas('ConductorBus', function ($query) use ($bus) {
+                    $query->where('bus_id', $bus->id);
+                })->orWhereDoesntHave('ConductorBus');
+            })
+            ->where('id_po', $userId)
+            ->get();
+
+        return view('busses.edit', compact('bus', 'drivers', 'bus_conductors', 'assignedDrivers', 'assignedBusConductors'));
     }
 
 
@@ -327,26 +368,30 @@ class BussesController extends Controller
         $bus->save();
 
         $previousDrivers = $bus->drivers()->pluck('driver_id')->toArray();
-
+        $previousBusConductors = $bus->busConductors()->pluck('bus_conductor_id')->toArray();
         // Update pengemudi dan kondektur yang terkait dengan bus
-        if ($request->filled('drivers')) {
+        if ($request->filled('drivers') && $request->filled('bus_conductors')) {
             foreach ($request->drivers as $driverId) {
-
-                DriverConductorBus::updateOrCreate(
-                    ['driver_id' => $driverId, 'bus_id' => $bus->id],
-
-                );
+                foreach ($request->bus_conductors as $busConductorId) {
+                    DriverConductorBus::updateOrCreate(
+                        ['driver_id' => $driverId, 'bus_id' => $bus->id],
+                        ['bus_conductor_id' => $busConductorId, 'bus_id' => $bus->id]
+                    );
+                }
             }
         }
 
         // Hapus pengemudi dan kondektur yang dihapus dari select
         $removedDrivers = array_diff($previousDrivers, (array)$request->drivers);
-
+        $removedBusConductors = array_diff($previousBusConductors, (array)$request->bus_conductors);
 
         foreach ($removedDrivers as $removedDriverId) {
             DriverConductorBus::where('driver_id', $removedDriverId)->where('bus_id', $bus->id)->delete();
         }
 
+        foreach ($removedBusConductors as $removedBusConductorId) {
+            DriverConductorBus::where('bus_conductor_id', $removedBusConductorId)->where('bus_id', $bus->id)->delete();
+        }
 
 
         return redirect()->route('busses.index')->with('message', 'Data berhasil diperbarui');

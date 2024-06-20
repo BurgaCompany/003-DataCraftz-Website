@@ -25,6 +25,7 @@
             <td>{{ $bus->class }}</td>
             <td>{{ $bus->information ?: '-' }}</td>
             <td>{{ $bus->driver_name ?: '-'}}</td>
+            <td>{{ $bus->conductor_name ?: '-'}}</td>
             @if(auth()->user()->hasAnyRole(['Upt', 'Admin']))
             <td>{{ $bus->po->name }}</td>
         @endif

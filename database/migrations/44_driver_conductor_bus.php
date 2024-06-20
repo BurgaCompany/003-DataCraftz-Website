@@ -16,11 +16,13 @@ return new class extends Migration
         Schema::create('driver_conductor_bus', function (Blueprint $table) {
             $table->id();
             $table->foreignId('driver_id');
+            $table->foreignId('bus_conductor_id');
             $table->foreignId('bus_id');
             $table->timestamps();
 
             // Menambahkan foreign key constraint
             $table->foreign('driver_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('bus_conductor_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('bus_id')->references('id')->on('busses')->onDelete('cascade');
         });
     }

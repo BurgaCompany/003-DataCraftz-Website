@@ -72,7 +72,7 @@
                                         <div class="form-group">
                                             <label for="max_price">Harga Maksimum Bus</label>
                                             <div class="input-group">
-                                                <input type="number" class="form-control" name="max_price" id="max_price" placeholder="Harga Maksimum" required value="{{ old('max_price', $schedules->max_price) }}" min="0" {{ Auth::user()->hasRole('PO') ? 'disabled' : '' }} oninput="validatePrices()">
+                                                <input type="number" class="form-control" name="max_price" id="max_price" placeholder="Harga Maksimum" required value="{{ old('max_price', $schedules->max_price) }}" min="0" {{    Auth::user()->hasRole('PO') ? 'disabled' : '' }} oninput="validatePrices()">
                                                 <div class="input-group-append">
                                                     <span class="input-group-text">Max</span>
                                                 </div>

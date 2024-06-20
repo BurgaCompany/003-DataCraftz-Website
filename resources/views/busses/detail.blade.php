@@ -72,7 +72,7 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-md-12">
+                                    <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="drivers">Sopir</label>
                                             <select class="js-states form-control" name="drivers[]" id="drivers" style="width: 100%"  title="Pilih satu atau lebih sopir" disabled>
@@ -84,6 +84,23 @@
                                                 <option value="{{ $driver->id }}" selected>{{ $driver->name }}</option>
                                                 @else
                                                 <option value="{{ $driver->id }}">{{ $driver->name }}</option>
+                                                @endif
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="bus_conductors">Kondektur</label>
+                                            <select class="js-states form-control" name="bus_conductors[]" id="bus_conductors" style="width: 100%"  title="Pilih satu atau lebih kondektur" disabled>
+                                                @if($bus_conductors->isEmpty())
+                                                <option disabled selected>Belum Ada Kondektur</option>
+                                                @endif
+                                                @foreach($bus_conductors as $bus_conductor)
+                                                @if(in_array($bus_conductor->id, $assignedBusConductors))
+                                                <option value="{{ $bus_conductor->id }}" selected>{{ $bus_conductor->name }}</option>
+                                                @else
+                                                <option value="{{ $bus_conductor->id }}">{{ $bus_conductor->name }}</option>
                                                 @endif
                                                 @endforeach
                                             </select>

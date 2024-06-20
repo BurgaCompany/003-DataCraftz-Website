@@ -28,7 +28,7 @@
             </div>
             
             <div class="row">
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <a href="{{ route('drivers.index') }}">
                         <div class="card stat-card">
                             <div class="card-body">
@@ -43,8 +43,22 @@
                         </div>
                     </a>
                 </div>
-               
-                <div class="col-md-6">
+                <div class="col-md-4">
+                    <a href="{{ route('bus_conductors.index') }}">
+                        <div class="card stat-card">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h5 class="card-title"> <i class="fas fa-bus-alt fa-lg mr-2"></i>Total Kondektur Bus</h5>
+                                </div>
+                                <h2 class="float-right">{{ $totalConductor }}</h2>
+                                <div class="progress" style="height: 10px;">
+                                    <div class="progress-bar bg-warning" role="progressbar" style="width: {{ $totalConductor }}%" aria-valuenow="{{ $totalConductor }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-md-4">
                     <a href="{{ route('busses.index') }}">
                         <div class="card stat-card">
                             <div class="card-body">
@@ -95,6 +109,7 @@
                                             <th>Kelas</th>
                                             <th>Informasi</th>
                                             <th>Sopir</th>
+                                            <th>Kondektur</th>
                                             <th>Aksi</th>
                                         </tr>
                                     </thead>

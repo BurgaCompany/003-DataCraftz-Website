@@ -69,6 +69,7 @@
                                         <th>Kelas</th>
                                         <th>Status</th>
                                         <th>Sopir</th>
+                                        <th>Kondektur</th>
                                         <th>Aksi</th>
                                     </tr>
                                 </thead>
@@ -90,6 +91,7 @@
                                             {{ $bus->status }}
                                         </td>
                                         <td>{{ $bus->driver_name ?: '-'}}</td>
+                                        <td>{{ $bus->conductor_name ?: '-' }}</td>
                                         
                                         <td>
                                             <div class="btn-group" role="group" aria-label="Basic example">
