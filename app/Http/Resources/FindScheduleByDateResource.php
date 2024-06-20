@@ -29,7 +29,7 @@ class FindScheduleByDateResource extends JsonResource
             'to_station' => $this->toStation->name,
             'price' => $this->price,
             'time_start' => $this->time_start,
-            'pwt' => $this->pwt,
+            'pwt' => sprintf("%d Jam %02d Menit", floor($this->pwt / 60), $this->pwt % 60),
             'create_at' => $this->created_at,
             'update_at' => $this->updated_at,
         ];
