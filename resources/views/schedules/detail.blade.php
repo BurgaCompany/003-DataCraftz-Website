@@ -10,27 +10,14 @@
                         <div class="card-body">
                             <h5 class="card-title">Detail Jadwal</h5>
                             <form method="POST" action="" enctype="multipart/form-data">
-                                @csrf  
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="form-group">
-                                            <label for="Bus">Bus</label>
-                                            <select class="js-states form-control" name="busses[]" id="busses" style="width: 100%" disabled>
-                                                @foreach($busses as $buss)
-                                                <option value="{{ $buss->id }}" {{ $schedules->bus_id == $buss->id ? 'selected' : '' }}>{{ $buss->name }}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                                
+                                @csrf
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="departureTerminal">Terminal Berangkat</label>
                                             <select class="js-states form-control" name="frombusStations[]" id="departureTerminal" style="width: 100%" disabled>
                                                 @foreach($busStations as $busStation)
-                                                <option value="{{ $busStation->id }}" {{ $schedules->from_station_id == $busStation->id ? 'selected' : '' }}>{{ $busStation->name }}</option>
+                                                <option value="{{ $busStation->id }}" {{ $schedules->from_station_id == $busStation->id ? 'selected' : '' }}>{{ $busStation->name }} </option>
                                                 @endforeach
                                             </select>
                                             <div id="terminal-error-message" class="invalid-feedback" style="display: none;">
@@ -52,8 +39,50 @@
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div class="form-group">
-                                            <label for="price">Harga (Rupiah)</label>
-                                            <input type="number" class="form-control" name="price" id="price" required value="{{ $schedules->price }}" disabled>
+                                            <label for="Bus">Bus</label>
+                                            <select class="js-states form-control" name="busses[]" id="busses" style="width: 100%" disabled>
+                                                @foreach($busses as $buss)
+                                                <option value="{{ $buss->id }}" {{ $schedules->bus_id == $buss->id ? 'selected' : '' }}>{{ $buss->name }} ({{ $buss->class }})</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="min_price">Harga Minimum Bus</label>
+                                            <div class="input-group">
+                                                <input type="number" class="form-control" name="min_price" id="min_price" placeholder="Harga Minimum" required value="{{ old('min_price', $schedules->min_price) }}" min="0" disabled>
+                                                <div class="input-group-append">
+                                                    <span class="input-group-text">Min</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="max_price">Harga Maksimum Bus</label>
+                                            <div class="input-group">
+                                                <input type="number" class="form-control" name="max_price" id="max_price" placeholder="Harga Maksimum" required value="{{ old('max_price', $schedules->max_price) }}" min="0" disabled>
+                                                <div class="input-group-append">
+                                                    <span class="input-group-text">Max</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label for="min_price">Penentuan Harga</label>
+                                            <div class="input-group">
+                                                <input type="number" class="form-control" name="price" id="price" placeholder="Penentuan Harga" required value="{{ old('price', $schedules->price) }}" min="0" 
+                                                    @if($buss->class == 'Patas')
+                                                    @else
+                                                        oninput="validatePrice()"
+                                                    @endif disabled>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

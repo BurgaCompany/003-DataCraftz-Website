@@ -165,7 +165,7 @@ class BussesController extends Controller
             'chair' => $request->chair,
             'class' => $request->class,
             'status' => $request->status, // Menambahkan status dari formulir
-            'information' => $request->status == 4 ? $request->keterangan : null, // Menambahkan keterangan jika status adalah 4 (Terkendala)
+            'information' => $request->status == 'Terkendala' ? $request->keterangan : null, // Menambahkan keterangan jika status adalah 4 (Terkendala)
             'images' => $imageName,
             'id_po' => $userId, // Menambahkan id_upt dari pengguna yang sedang masuk
             'created_at' => Carbon::now(),
@@ -250,8 +250,6 @@ class BussesController extends Controller
             ->where('id_po', $userId)
             ->get();
 
-
-
         return view('busses.edit', compact('bus', 'drivers',  'assignedDrivers'));
     }
 
@@ -323,7 +321,7 @@ class BussesController extends Controller
         $bus->chair = $request->chair;
         $bus->class = $request->class;
         $bus->status = $request->status;
-        $bus->information = $request->status == 4 ? $request->keterangan : null;
+        $bus->information = $request->status == 'Terkendala' ? $request->keterangan : null;
         $bus->images = $imageName;
 
         $bus->save();

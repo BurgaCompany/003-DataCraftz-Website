@@ -70,7 +70,7 @@
                                         <th>Nama Bus</th>
                                         <th>Terminal Berangkat</th>
                                         <th>Terminal Tujuan</th>
-                                        <th>Harga</th>
+                                        <th>Rentang Harga</th>
                                         <th>Jam Berangkat</th>
                                         <th>Perkiraan Waktu Tempuh</th>
                                         <th>Tanggal Dibuat</th>
@@ -90,7 +90,7 @@
                                         <td>{{ $schedule->bus->name }} ({{ $schedule->bus->license_plate_number }})</td>
                                         <td>{{ $schedule->fromStation->name }}</td>
                                         <td>{{ $schedule->toStation->name }}</td>
-                                        <td>{{ $schedule->price }}</td>
+                                        <td>{{ number_format($schedule->min_price, 0, ',', '.') }} - {{ number_format($schedule->max_price, 0, ',', '.') }}</td>
                                         <td>{{ $schedule->time_start }}</td>
                                         <td>{{ $schedule->duration }}</td>
                                         <td>{{ $schedule->created_at }}</td>
@@ -100,7 +100,7 @@
                                                     <i class="fas fa-eye"></i>
                                                 </a>
                                             </div>
-                                            @if (Auth::user()->hasRole('Root'))
+                                            @if(auth()->user()->hasAnyRole(['Root', 'PO']))
                                             <div class="btn-group" role="group" aria-label="Basic example">
                                                 <a href="{{ route('schedules.edit', $schedule->id) }}" class="btn btn-primary" data-toggle="tooltip" data-placement="top" title="Ubah">
                                                     <i class="fas fa-edit"></i>

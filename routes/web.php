@@ -74,6 +74,10 @@ Route::middleware(['role:Root|Upt|Admin|PO'])->group(function () {
     Route::get('/schedules/search', [ScheduleController::class, 'search'])->name('schedules.search');
 });
 
+Route::middleware(['role:Root|PO'])->group(function () {
+    Route::get('/schedules/{id}/edit', [ScheduleController::class, 'edit'])->name('schedules.edit');
+    Route::put('/schedules/{id}', [ScheduleController::class, 'update'])->name('schedules.update');
+});
 
 Route::middleware(['role:Root'])->group(function () {
     Route::get('/upts', [UptController::class, 'index'])->name('upts.index');
@@ -97,8 +101,6 @@ Route::middleware(['role:Root'])->group(function () {
     //Route for schedules
     Route::get('/schedules/create', [ScheduleController::class, 'create'])->name('schedules.create');
     Route::post('/schedules', [ScheduleController::class, 'store'])->name('schedules.store');
-    Route::get('/schedules/{id}/edit', [ScheduleController::class, 'edit'])->name('schedules.edit');
-    Route::put('/schedules/{id}', [ScheduleController::class, 'update'])->name('schedules.update');
     Route::post('/schedules/delete', [ScheduleController::class, 'destroyMulti'])->name('schedules.destroy.multi');
 });
 

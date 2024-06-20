@@ -14,22 +14,6 @@
                             <form method="POST" action="{{ route('schedules.store') }}" enctype="multipart/form-data">
                                 @csrf  
                                 <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="form-group">
-                                            <label for="Bus">Bus</label>
-                                            <select class="js-states form-control" name="busses[]" id="busses" style="width: 100%"  title="Pilih satu atau lebih sopir">
-                                                @if($busses->isEmpty())
-                                                <option disabled selected>Belum Ada Bus</option>
-                                                @endif
-                                                @foreach($busses as $buss)
-                                                    <option value="{{ $buss->id }}">{{ $buss->name }} ({{ $buss->license_plate_number }})</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="departureTerminal">Terminal Berangkat</label>
@@ -66,16 +50,46 @@
                                         </div>
                                     </div>
                                 </div>
+
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div class="form-group">
-                                            <label for="price">Harga (Rupiah)</label>
-                                            <input type="number" class="form-control" name="price" id="price" oninput="if(this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" maxlength="6" value="{{ old('price') }}">
+                                            <label for="Bus">Bus</label>
+                                            <select class="js-states form-control" name="busses[]" id="busses" style="width: 100%"  title="Pilih satu atau lebih sopir">
+                                                @if($busses->isEmpty())
+                                                <option disabled selected>Belum Ada Bus</option>
+                                                @endif
+                                                @foreach($busses as $buss)
+                                                    <option value="{{ $buss->id }}">{{ $buss->name }} ({{ $buss->license_plate_number }})</option>
+                                                @endforeach
+                                            </select>
                                         </div>
                                     </div>
                                 </div>
-                                
-                                
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="min_price">Harga Minimum Bus</label>
+                                            <div class="input-group">
+                                                <input type="number" class="form-control" name="min_price" id="min_price" placeholder="Harga Minimum" required value="{{ old('min_price') }}" min="0" oninput="validatePrices()">
+                                                <div class="input-group-append">
+                                                    <span class="input-group-text">Min</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="max_price">Harga Maksimum Bus</label>
+                                            <div class="input-group">
+                                                <input type="number" class="form-control" name="max_price" id="max_price" placeholder="Harga Maksimum" required value="{{ old('max_price') }}" min="0" oninput="validatePrices()">
+                                                <div class="input-group-append">
+                                                    <span class="input-group-text">Max</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group">
@@ -91,7 +105,6 @@
                                                 <div class="input-group-append">
                                                     <span class="input-group-text">Jam</span>
                                                 </div>
-
                                                 <input type="number" class="form-control" name="minutes" id="minutes" placeholder="Menit" required value="{{ old('minutes') }}" min="0" max="59">
                                                 <div class="input-group-append">
                                                     <span class="input-group-text">Menit</span>

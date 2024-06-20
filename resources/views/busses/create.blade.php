@@ -42,8 +42,8 @@
                                         <div class="form-group">
                                             <label for="class">Kelas</label>
                                             <select class="js-states form-control" name="class" id="class" style="width: 100%">
-                                                <option value="ekonomi" {{ old('class') == 'ekonomi' ? 'selected' : '' }}>Ekonomi</option>
-                                                <option value="bisnis" {{ old('class') == 'bisnis' ? 'selected' : '' }}>Bisnis</option>
+                                                <option value="ekonomi" {{ old('class') == 'Ekonomi' ? 'selected' : '' }}>Ekonomi</option>
+                                                <option value="bisnis" {{ old('class') == 'Patas' ? 'selected' : '' }}>Patas</option>
                                             </select>
                                         </div>
                                     </div>
@@ -54,11 +54,10 @@
                                         <div class="form-group">
                                             <label for="status">Status</label>
                                             <select class="js-states form-control" name="status" id="status" style="width: 100%" onchange="showKeterangan()" required>
-                                                <option value="1" {{ old('status') == '1' ? 'selected' : '' }}>Belum Berangkat</option>
-                                                <option value="2" {{ old('status') == '2' ? 'selected' : '' }}>Bersedia Berangkat</option>
-                                                <option value="3" {{ old('status') == '3' ? 'selected' : '' }}>Berangkat</option>
-                                                <option value="4" {{ old('status') == '4' ? 'selected' : '' }}>Terkendala</option>
-                                                <option value="5" {{ old('status') == '5' ? 'selected' : '' }}>Tiba di Tujuan</option>
+                                                <option value="Belum Berangkat" {{ old('status') == 'Belum Berangkat' ? 'selected' : '' }}>Belum Berangkat</option>
+                                                <option value="Berangkat" {{ old('status') == 'Berangkat' ? 'selected' : '' }}>Berangkat</option>
+                                                <option value="Terkendala" {{ old('status') == 'Terkendala' ? 'selected' : '' }}>Terkendala</option>
+                                                <option value="Sampai di Tujuan" {{ old('status') == 'Sampai di Tujuan' ? 'selected' : '' }}>Sampai di Tujuan</option>
                                             </select>
                                         </div>
                                     </div>

@@ -23,7 +23,6 @@ document.addEventListener("DOMContentLoaded", function () {
         marker = L.marker([initialLat, initialLng]).addTo(map);
     }
 
-    // Add geocoder control
     var geocoder = L.Control.geocoder({
         defaultMarkGeocode: false,
         placeholder: "Cari lokasi...",
@@ -41,6 +40,19 @@ document.addEventListener("DOMContentLoaded", function () {
             // Update form input values
             document.getElementById("latitude").value = latlng.lat;
             document.getElementById("longitude").value = latlng.lng;
+
+            // Reverse geocode to get the address
+            var geocodeService = L.Control.Geocoder.nominatim();
+            geocodeService.reverse(
+                latlng,
+                map.options.crs.scale(map.getZoom()),
+                function (results) {
+                    var result = results[0];
+                    if (result) {
+                        document.getElementById("address").value = result.name;
+                    }
+                }
+            );
         })
         .addTo(map);
 

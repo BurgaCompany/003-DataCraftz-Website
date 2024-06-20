@@ -14,23 +14,10 @@
                                 @csrf  
                                 @method('PUT')
                                 <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="form-group">
-                                            <label for="Bus">Bus</label>
-                                            <select class="js-states form-control" name="busses[]" id="busses" style="width: 100%"  title="Pilih satu atau lebih sopir">
-                                                @foreach($busses as $buss)
-                                                <option value="{{ $buss->id }}" {{ $schedules->bus_id == $buss->id ? 'selected' : '' }}>{{ $buss->name }}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                            
-                                <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="departureTerminal">Terminal Berangkat</label>
-                                            <select class="js-states form-control" name="frombusStations[]" id="departureTerminal" style="width: 100%">
+                                            <select class="js-states form-control" name="frombusStations[]" id="departureTerminal" style="width: 100%" {{ Auth::user()->hasRole('PO') ? 'disabled' : '' }}>
                                                 @foreach($busStations as $busStation)
                                                 <option value="{{ $busStation->id }}" {{ $schedules->from_station_id == $busStation->id ? 'selected' : '' }}>{{ $busStation->name }}</option>
                                                 @endforeach
@@ -49,7 +36,7 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="arrivalTerminal">Terminal Tujuan</label>
-                                            <select class="js-states form-control" name="tobusStations[]" id="arrivalTerminal" style="width: 100%">
+                                            <select class="js-states form-control" name="tobusStations[]" id="arrivalTerminal" style="width: 100%" {{ Auth::user()->hasRole('PO') ? 'disabled' : '' }}>
                                                 @foreach($busStations as $busStation)
                                                 <option value="{{ $busStation->id }}" {{ $schedules->to_station_id == $busStation->id ? 'selected' : '' }}>{{ $busStation->name }}</option>
                                                 @endforeach
@@ -60,45 +47,80 @@
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div class="form-group">
-                                            <label for="price">Harga (Rupiah)</label>
-                                            <input type="number" class="form-control" name="price" id="price" required value="{{ $schedules->price }}">
+                                            <label for="Bus">Bus</label>
+                                            <select class="js-states form-control" name="busses[]" id="busses" style="width: 100%"  title="Pilih satu atau lebih sopir" {{ Auth::user()->hasRole('PO') ? 'disabled' : '' }}>
+                                                @foreach($busses as $buss)
+                                                <option value="{{ $buss->id }}" {{ $schedules->bus_id == $buss->id ? 'selected' : '' }}>{{ $buss->name }} ({{ $buss->class }})</option>
+                                                @endforeach
+                                            </select>
                                         </div>
                                     </div>
                                 </div>
-
                                 <div class="row">
-                                    
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="min_price">Harga Minimum Bus</label>
+                                            <div class="input-group">
+                                                <input type="number" class="form-control" name="min_price" id="min_price" placeholder="Harga Minimum" required value="{{ old('min_price', $schedules->min_price) }}" min="0" {{ Auth::user()->hasRole('PO') ? 'disabled' : '' }} oninput="validatePrices()">
+                                                <div class="input-group-append">
+                                                    <span class="input-group-text">Min</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="max_price">Harga Maksimum Bus</label>
+                                            <div class="input-group">
+                                                <input type="number" class="form-control" name="max_price" id="max_price" placeholder="Harga Maksimum" required value="{{ old('max_price', $schedules->max_price) }}" min="0" {{ Auth::user()->hasRole('PO') ? 'disabled' : '' }} oninput="validatePrices()">
+                                                <div class="input-group-append">
+                                                    <span class="input-group-text">Max</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label for="min_price">Penentuan Harga</label>
+                                            <div class="input-group">
+                                                <input type="number" class="form-control" name="price" id="price" placeholder="Penentuan Harga" required value="{{ old('price', $schedules->price) }}" min="0"   {{ Auth::user()->hasRole('Root') ? 'disabled' : '' }}
+                                                    @if($buss->class == 'Patas')
+                                                    @else
+                                                        oninput="validatePrice()"
+                                                    @endif>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="time_start">Jam Berangkat</label>
                                             @php
-                                                // Mengambil nilai time_start dari database
                                                 $timeStart = \Carbon\Carbon::parse($schedules->time_start);
-                                                // Memformat waktu menjadi HH:MM
                                                 $formattedTime = $timeStart->format('H:i');
                                             @endphp
-                                            <input type="time" class="form-control" name="time_start" id="time_start" required value="{{ $formattedTime }}">
+                                            <input type="time" class="form-control" name="time_start" id="time_start" required value="{{ $formattedTime }}" {{ Auth::user()->hasRole('PO') ? 'disabled' : '' }}>
                                         </div>
                                     </div>
-                                    
-
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="pwt">Perkiraan Waktu Tempuh</label>
                                             <div class="input-group">
-                                                <input type="number" class="form-control" name="hours" id="hours" placeholder="Jam" required value="{{ floor($schedules->pwt / 60) }}">
+                                                <input type="number" class="form-control" name="hours" id="hours" placeholder="Jam" required value="{{ floor($schedules->pwt / 60) }}" {{ Auth::user()->hasRole('PO') ? 'disabled' : '' }}>
                                                 <div class="input-group-append">
                                                     <span class="input-group-text">Jam</span>
                                                 </div>
                             
-                                                <input type="number" class="form-control" name="minutes" id="minutes" placeholder="Menit" required value="{{ $schedules->pwt % 60 }}" min="0" max="59">
+                                                <input type="number" class="form-control" name="minutes" id="minutes" placeholder="Menit" required value="{{ $schedules->pwt % 60 }}" min="0" max="59" {{ Auth::user()->hasRole('PO') ? 'disabled' : '' }}>
                                                 <div class="input-group-append">
                                                     <span class="input-group-text">Menit</span>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-
                                 </div>
                             
                                 @if($errors->any())
