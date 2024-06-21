@@ -288,7 +288,8 @@ class ScheduleController extends Controller
     {
         $from_station_id = $request->query('from_station');
         $to_station_id = $request->query('to_station');
-        $date_departure = $request->query('date');
+        $date = \DateTime::createFromFormat('Y-n-j', $request->query('date'));
+        $date_departure = $date->format('Y-m-d');
         $date_now = now()->format('Y-m-d');
         $schedule = Schedule::with(['bus', 'fromStation', 'toStation'])
             ->whereFromStation($from_station_id)
