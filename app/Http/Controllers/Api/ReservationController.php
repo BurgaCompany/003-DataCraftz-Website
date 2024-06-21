@@ -104,4 +104,30 @@ class ReservationController extends Controller
             ], 500);
         }
     }
+
+    public function getReservation(Request $request)
+    {
+        $user_id = $request->query('user_id');
+        $id = $request->query('schedule_id');
+        try {
+            $reservation = Reservation::with(['schedule', 'user', 'bus'])->where('user_id', $user_id)->ScheduleId($id)->first();
+            if (!$reservation) {
+                return response()->json([
+                    'statusCode' => 400,
+                    'message' => 'Data not found!',
+                ], 400);
+            }
+            return response()->json([
+                'statusCode' => 200,
+                'message' => 'Success!',
+                'data_reservation' => new ReservationResource($reservation)
+            ], 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'statusCode' => 500,
+                'message' => 'Error!',
+                'data_reservation' => $th->getMessage()
+            ], 500);
+        }
+    }
 }

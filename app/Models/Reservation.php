@@ -42,5 +42,11 @@ class Reservation extends Model
         return $this->belongsTo(Schedule::class);
     }
 
+    // Query Scope untuk mencari data berdasarkan schedule_id
+    public function scopeScheduleId(Builder $query, $scheduleId)
+    {
+        return $query->where('schedule_id', $scheduleId);
+    }
+
     
 }
