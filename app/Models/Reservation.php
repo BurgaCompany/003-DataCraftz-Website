@@ -18,7 +18,6 @@ class Reservation extends Model
         'tickets_booked',
         'date_departure',
         'status',
-        'token_payment'
     ];
 
     protected $attributes = [

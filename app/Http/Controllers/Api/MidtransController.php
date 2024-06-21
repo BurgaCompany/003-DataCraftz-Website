@@ -26,6 +26,7 @@ class MidtransController extends Controller
         $reservation->date_departure = $request->date_departure;
         $reservation->total_price = $gross_amount;
         $reservation->status = 1;
+        $reservation->save();
         
 
         $id_user = User::where('id', $request->user_id)->first();
@@ -44,8 +45,6 @@ class MidtransController extends Controller
         ];
 
         $midtrans = Snap::createTransaction($value);
-        $reservation->token_payment = $midtrans->token;
-        $reservation->save();
         return response()->json([
             'snap_token' => $midtrans
         ]);

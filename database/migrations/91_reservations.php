@@ -23,7 +23,6 @@ return new class extends Migration
             $table->date('date_departure');
             $table->integer('total_price')->default(0);
             $table->enum('status', [1, 2]);
-            $table->string('token_payment')->nullable(true);
             $table->timestamps();
             $table->foreign('user_id')->references('id')->on('users');
             $table->foreign('bus_id')->references('id')->on('busses');
