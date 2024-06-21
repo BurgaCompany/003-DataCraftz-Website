@@ -43,7 +43,7 @@ class FindScheduleByDateResource extends JsonResource
             'driver_id' => $this->driver->drivers->id,
             'driver_name' => $this->driver->drivers->name,
             'chair' => $this->bus->chair - Reservation::where('schedule_id', $this->id)->where('date_departure', $this->date_departure)->count(),
-            'name_stattion' => $this->fromStation->name,
+            'name_station' => $this->fromStation->name,
             'from_station' => $this->fromStation->code_name,
             'to_station' => $this->toStation->code_name,
             'price' => $this->price,
