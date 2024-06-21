@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\ReservationHistoryResource;
 use App\Http\Resources\ReservationResource;
 use App\Models\Reservation;
 use Illuminate\Http\Request;
@@ -32,7 +33,7 @@ class ReservationController extends Controller
     {
         $user_id = $request->query('id');
         try {
-            $reservation = Reservation::where('status', 1)->where('user_id', $user_id)->get();
+            $reservation = Reservation::with(['schedule', 'user', 'bus'])->where('status', 1)->where('user_id', $user_id)->get();
             if ($reservation->isEmpty()) {
                 return response()->json([
                     'statusCode' => 400,
@@ -42,7 +43,7 @@ class ReservationController extends Controller
             return response()->json([
                 'statusCode' => 200,
                 'message' => 'Success!',
-                'data_reservation' => $reservation
+                'data_reservation' => ReservationHistoryResource::collection($reservation)
             ], 200);
         } catch (\Throwable $th) {
             return response()->json([
@@ -57,7 +58,7 @@ class ReservationController extends Controller
     {
         $user_id = $request->query('id');
         try {
-            $reservation = Reservation::where('status', 2)->where('user_id', $user_id)->get();
+            $reservation = Reservation::with(['schedule', 'user', 'bus'])->where('status', 2)->where('user_id', $user_id)->get();
             if ($reservation->isEmpty()) {
                 return response()->json([
                     'statusCode' => 400,
@@ -67,7 +68,7 @@ class ReservationController extends Controller
             return response()->json([
                 'statusCode' => 200,
                 'message' => 'Success!',
-                'data_reservation' => $reservation
+                'data_reservation' => ReservationHistoryResource::collection($reservation)
             ], 200);
         } catch (\Throwable $th) {
             return response()->json([

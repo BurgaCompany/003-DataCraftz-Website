@@ -4,7 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class ReservationResource extends JsonResource
+class ReservationHistoryResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -31,7 +31,6 @@ class ReservationResource extends JsonResource
 
         // Format hasil perhitungan waktu
         $pwt = sprintf('%d Jam %d Menit', $totalHours, $totalMinutes);
-
         return [
             'order_id' => $this->order_id,
             'user_name' => $this->user->name,

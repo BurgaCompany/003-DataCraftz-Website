@@ -34,7 +34,7 @@ class FindScheduleByDateResource extends JsonResource
         $totalMinutes = $interval->i;
 
         // Format hasil perhitungan waktu
-        $pwt = sprintf('%d jam %d menit', $totalHours, $totalMinutes);
+        $pwt = sprintf('%d Jam %d Menit', $totalHours, $totalMinutes);
 
         return [
             'id' => $this->id,
@@ -43,8 +43,9 @@ class FindScheduleByDateResource extends JsonResource
             'driver_id' => $this->driver->drivers->id,
             'driver_name' => $this->driver->drivers->name,
             'chair' => $this->bus->chair - Reservation::where('schedule_id', $this->id)->where('date_departure', $this->date_departure)->count(),
-            'from_station' => $this->fromStation->name,
-            'to_station' => $this->toStation->name,
+            'name_stattion' => $this->fromStation->name,
+            'from_station' => $this->fromStation->code_name,
+            'to_station' => $this->toStation->code_name,
             'price' => $this->price,
             'time_start' => $this->time_start,
             'time_arrive' => $this->time_arrive,
