@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Midtrans\getSnapToken;
 use App\Models\Reservation;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Midtrans\Notification;
 use Midtrans\Snap;
 
 class MidtransController extends Controller
@@ -26,7 +26,7 @@ class MidtransController extends Controller
         $reservation->date_departure = $request->date_departure;
         $reservation->total_price = $gross_amount;
         $reservation->status = 1;
-        $reservation->save();
+        
 
         $id_user = User::where('id', $request->user_id)->first();
 
@@ -44,6 +44,8 @@ class MidtransController extends Controller
         ];
 
         $midtrans = Snap::createTransaction($value);
+        $reservation->token_payment = $midtrans->token;
+        $reservation->save();
         return response()->json([
             'snap_token' => $midtrans
         ]);
