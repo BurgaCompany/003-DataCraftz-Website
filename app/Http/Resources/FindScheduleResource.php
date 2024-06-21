@@ -40,7 +40,7 @@ class FindScheduleResource extends JsonResource
             'driver_id' => $this->driver->drivers->id,
             'driver_name' => $this->driver->drivers->name,
             'chair' => $this->bus->chair,
-            // 'name_station' => $this->fromStation->name,
+            'name_station' => $this->fromStation->name,
             'from_station' => $this->fromStation->code_name,
             'to_station' => $this->toStation->code_name,
             'price' => $this->price,
