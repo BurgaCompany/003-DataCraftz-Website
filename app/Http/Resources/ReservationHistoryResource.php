@@ -44,6 +44,7 @@ class ReservationHistoryResource extends JsonResource
             'bus_class' => $this->bus->class,
             'schedule_price' => $this->schedule->price,
             'schedule_time_start' => $this->schedule->time_start,
+            'schedule_time_arrive' => $this->schedule->time_arrive,
             'license_plate_number' => $this->bus->license_plate_number,
             'tickets_booked' => $this->tickets_booked,
             'date_departure' => $this->date_departure,
