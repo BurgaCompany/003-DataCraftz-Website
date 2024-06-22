@@ -33,7 +33,7 @@ class ReservationController extends Controller
     {
         $user_id = $request->query('id');
         try {
-            $reservation = Reservation::with(['schedule', 'user', 'bus'])->where('status', 1)->where('user_id', $user_id)->get();
+            $reservation = Reservation::with(['schedule', 'user', 'bus'])->where('status', 1)->where('user_id', $user_id)->orderBy('id', 'desc')->get();
             if ($reservation->isEmpty()) {
                 return response()->json([
                     'statusCode' => 400,
@@ -58,7 +58,7 @@ class ReservationController extends Controller
     {
         $user_id = $request->query('id');
         try {
-            $reservation = Reservation::with(['schedule', 'user', 'bus'])->where('status', 2)->where('user_id', $user_id)->get();
+            $reservation = Reservation::with(['schedule', 'user', 'bus'])->where('status', 2)->where('user_id', $user_id)->orderBy('id', 'desc')->get();
             if ($reservation->isEmpty()) {
                 return response()->json([
                     'statusCode' => 400,
