@@ -110,7 +110,11 @@ class ReservationController extends Controller
         $user_id = $request->query('user_id');
         $id = $request->query('schedule_id');
         try {
-            $reservation = Reservation::with(['schedule', 'user', 'bus'])->where('user_id', $user_id)->ScheduleId($id)->first();
+            $reservation = Reservation::with(['schedule', 'user', 'bus'])
+                ->where('user_id', $user_id)
+                ->ScheduleId($id)
+                ->orderBy('created_at', 'desc')
+                ->first();
             if (!$reservation) {
                 return response()->json([
                     'statusCode' => 400,

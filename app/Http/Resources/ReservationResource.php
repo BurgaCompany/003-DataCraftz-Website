@@ -45,7 +45,7 @@ class ReservationResource extends JsonResource
             'license_plate_number' => $this->bus->license_plate_number,
             'tickets_booked' => $this->tickets_booked,
             'date_departure' => $this->date_departure,
-            'status' => $this->status,
+            'status' => $this->status == 1 ? 'Berlangsung' : 'Selesai',
         ];
     }
 }
