@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\Auth\AuthController;
+use App\Http\Controllers\Api\CondectureController;
 use App\Http\Controllers\Api\ScheduleController;
 use App\Http\Controllers\Api\DriverAttendanceController;
 use App\Http\Controllers\Api\DriverReviewController;
@@ -66,6 +67,12 @@ Route::group(['namespace' => 'reservation'], function () {
     Route::get('reservation-after-payment', [ReservationController::class, 'getReservation']);
 
 });
+
+Route::group(['namespace' => 'conductor'], function () {
+    Route::get('scan/conductor', [CondectureController::class, 'validationId']);
+    Route::get('check/update', [CondectureController::class, 'updateStatusReservation']);
+});
+
 
 
 Route::put('Driver/status/{id}', [DriverAttendanceController::class, 'updateStatus']);
