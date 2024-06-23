@@ -4,9 +4,19 @@ namespace App\Http\Resources;
 
 use App\Models\Reservation;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Log;
 
 class FindScheduleByDateResource extends JsonResource
 {
+    private $date_departure;
+
+    public function __construct($resource, $date_departure)
+    {
+        // Ensure you call the parent constructor
+        parent::__construct($resource);
+        $this->date_departure = $date_departure;
+    }
+
     private function calculatePWT()
     {
         $start = new \DateTime($this->time_start);
@@ -31,9 +41,7 @@ class FindScheduleByDateResource extends JsonResource
             'bus_id' => $this->bus->id,
             'driver_id' => $this->driver->drivers->id,
             'driver_name' => $this->driver->drivers->name,
-            'chair' => $this->bus->chair - Reservation::where('schedule_id', $this->id)
-                ->where('date_departure', $this->date_departure)
-                ->sum('tickets_booked'),
+            'chair' => $this->bus->chair - Reservation::where('schedule_id', $this->id)->where('date_departure', $this->date_departure)->sum('tickets_booked'),
             'plat_number' => $this->bus->license_plate_number,
             'name_station' => $this->fromStation->name,
             'to_name_station' => $this->toStation->name,
