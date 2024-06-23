@@ -36,6 +36,7 @@ class ReservationHistoryResource extends JsonResource
         return [
             'order_id' => $this->order_id,
             'user_name' => $this->user->name,
+            'driver_id' => $this->schedule->driver->driver_id,
             'schedule_from_station' => $this->schedule->fromStation->name,
             'schedule_to_station' => $this->schedule->toStation->name,
             'schedule_from_station_code_name' => $this->schedule->fromStation->code_name,
