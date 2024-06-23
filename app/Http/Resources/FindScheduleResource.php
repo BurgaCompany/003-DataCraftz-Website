@@ -45,7 +45,7 @@ class FindScheduleResource extends JsonResource
             'to_name_station' => $this->toStation->name,
             'from_station' => $this->fromStation->code_name,
             'to_station' => $this->toStation->code_name,
-            'price' => $this->price,
+            'price' => $this->price == null ? 0 : $this->price,
             'time_start' => $this->time_start,
             'time_arrive' => $this->time_arrive,
             'pwt' => $pwt,

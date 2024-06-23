@@ -7,8 +7,10 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\FindScheduleByDateResource;
 use App\Http\Resources\FindScheduleResource;
 use App\Models\Buss;
+use App\Models\DriverConductorBus;
 use App\Models\Reservation;
 use App\Models\Schedule;
+use App\Models\ScheduleStatus;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -307,9 +309,9 @@ class ScheduleController extends Controller
 
         if ($date_departure == $date_now) {
             $schedule_byDate = Schedule::with(['bus', 'fromStation', 'toStation', 'driver'])
-            ->whereFromStation($from_station_id)
-            ->whereToStation($to_station_id)
-            ->get();
+                ->whereFromStation($from_station_id)
+                ->whereToStation($to_station_id)
+                ->get();
             return response()->json([
                 'statusCode' => 200,
                 'message' => 'Success!',
@@ -327,9 +329,9 @@ class ScheduleController extends Controller
 
         if ($reservation > 0) {
             $schedule_byDate = Schedule::with(['bus', 'fromStation', 'toStation', 'driver'])
-            ->whereFromStation($from_station_id)
-            ->whereToStation($to_station_id)
-            ->get();
+                ->whereFromStation($from_station_id)
+                ->whereToStation($to_station_id)
+                ->get();
             return response()->json([
                 'statusCode' => 200,
                 'message' => 'Success!',
@@ -343,6 +345,46 @@ class ScheduleController extends Controller
             'statusCode' => 200,
             'message' => 'Success!',
             'data_schedule' =>  FindScheduleResource::collection($schedule)
+        ]);
+    }
+
+    public function listStatusDriver(Request $request)
+    {
+        $driver_id = $request->query('driver_id');
+        $busses = DriverConductorBus::where('driver_id', $driver_id)->first();
+        if ($busses == null) {
+            return response()->json([
+                'statusCode' => 400,
+                'message' => 'data tidak ditemukan'
+            ], 400);
+        }
+
+        $schedules = Schedule::with(['bus', 'fromStation', 'toStation', 'driver'])->where('id_driver', $busses->id)->orderBy('time_start', 'asc')->get();
+        if ($schedules->isEmpty()) {
+            return response()->json([
+                'statusCode' => 400,
+                'message' => 'data tidak ditemukan'
+            ], 400);
+        }
+
+        return response()->json([
+            'statusCode' => 200,
+            'message' => 'Success!',
+            'data_schedule' =>  FindScheduleResource::collection($schedules)
+        ]);
+    }
+
+    public function upStatusDriver(Request $request)
+    {
+        $status = new ScheduleStatus();
+        $status->schedule_id = $request->schedule_id;
+        $status->status = $request->status;
+        $status->date = $request->date;
+        $status->save();
+
+        return response()->json([
+            'statusCode' => 200,
+            'message' => 'berhasil melakukan check point'
         ]);
     }
 }

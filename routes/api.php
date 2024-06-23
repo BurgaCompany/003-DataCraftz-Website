@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\ReservationController;
 use App\Http\Controllers\Api\StationController;
 use App\Http\Controllers\Api\TrackBusController;
 use App\Http\Controllers\DriverController;
+use App\Models\Schedule;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -54,6 +55,7 @@ Route::group(['namespace' => 'midtrans'], function () {
 
 Route::group(['namespace' => 'tracking'], function () {
     Route::post('tracking-bus', [TrackBusController::class, 'updateLocation']);
+    Route::get('get-coordinate', [TrackBusController::class, 'getCoordinates']);
 });
 
 Route::group(['namespace' => 'review'], function () {
@@ -71,6 +73,12 @@ Route::group(['namespace' => 'reservation'], function () {
 Route::group(['namespace' => 'conductor'], function () {
     Route::get('scan/conductor', [CondectureController::class, 'validationId']);
     Route::get('check/update', [CondectureController::class, 'updateStatusReservation']);
+});
+
+Route::group(['namespace' => 'driver'], function () {
+    Route::get('driver/list', [ScheduleController::class, 'listStatusDriver']);
+    Route::post('driver/check', [ScheduleController::class, 'upStatusDriver']);
+    // Route::get('check/update', [CondectureController::class, 'updateStatusReservation']);
 });
 
 
