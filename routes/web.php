@@ -4,6 +4,7 @@ use App\Http\Controllers\AdminController;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\BankController;
 use App\Http\Controllers\BusConductorController;
 use App\Http\Controllers\BussesController;
 use App\Http\Controllers\DashboardController;
@@ -17,7 +18,8 @@ use App\Http\Controllers\OtobusController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\ScheduleController;
-
+use App\Http\Controllers\TransitController;
+use App\Models\Reservation;
 
 Route::get('/', [LandingController::class, 'index'])->name('landing');
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
@@ -30,7 +32,53 @@ Route::get('/profile', [ProfileController::class, 'show'])->middleware('role:Roo
 Route::post('/profile/update-image', [ProfileController::class, 'updateImage'])->middleware('role:Root|Upt|Admin|PO')->name('profile.update-image');
 Route::put('/profile/update/{id}', [ProfileController::class, 'update'])->middleware('role:Root|Upt|Admin|PO')->name('profile.update');
 
+Route::middleware(['role:Root'])->group(function () {
+    Route::get('/upts', [UptController::class, 'index'])->name('upts.index');
+    Route::get('/upts/search', [UptController::class, 'search'])->name('upts.search');
+    Route::get('/upts/create', [UptController::class, 'create'])->name('upts.create');
+    Route::post('/upts', [UptController::class, 'store'])->name('upts.store');
+    Route::get('/upts/{id}/edit', [UptController::class, 'edit'])->name('upts.edit');
+    Route::get('/upts/{id}/detail', [UptController::class, 'detail'])->name('upts.detail');
+    Route::put('/upts/{id}', [UptController::class, 'update'])->name('upts.update');
+    Route::post('/upts/delete', [UptController::class, 'destroyMulti'])->name('upts.destroy.multi');
 
+    Route::get('/otobuses', [OtobusController::class, 'index'])->name('otobuses.index');
+    Route::get('/otobuses/search', [OtobusController::class, 'search'])->name('otobuses.search');
+    Route::get('/otobuses/create', [OtobusController::class, 'create'])->name('otobuses.create');
+    Route::post('/otobuses', [OtobusController::class, 'store'])->name('otobuses.store');
+    Route::get('/otobuses/{id}/edit', [OtobusController::class, 'edit'])->name('otobuses.edit');
+    Route::get('/otobuses/{id}/detail', [OtobusController::class, 'detail'])->name('otobuses.detail');
+    Route::put('/otobuses/{id}', [OtobusController::class, 'update'])->name('otobuses.update');
+    Route::post('/otobuses/delete', [OtobusController::class, 'destroyMulti'])->name('otobuses.destroy.multi');
+
+    //Route for schedules
+
+    Route::get('/schedules/create', [ScheduleController::class, 'create'])->name('schedules.create');
+    Route::post('/schedules', [ScheduleController::class, 'store'])->name('schedules.store');
+    Route::post('/schedules/delete', [ScheduleController::class, 'destroyMulti'])->name('schedules.destroy.multi');
+});
+
+Route::middleware(['role:Upt'])->group(function () {
+    //route for admins
+    Route::get('/admins', [AdminController::class, 'index'])->name('admins.index');
+    Route::get('/admins/search', [AdminController::class, 'search'])->name('admins.search');
+    Route::get('/admins/create', [AdminController::class, 'create'])->name('admins.create');
+    Route::post('/admins', [AdminController::class, 'store'])->name('admins.store');
+    Route::get('/admins/{id}/edit', [AdminController::class, 'edit'])->name('admins.edit');
+    Route::get('/admins/{id}/detail', [AdminController::class, 'detail'])->name('admins.detail');
+    Route::put('/admins/{id}', [AdminController::class, 'update'])->name('admins.update');
+    Route::post('/admins/delete', [AdminController::class, 'destroyMulti'])->name('admins.destroy.multi');
+
+    // route for bus_stations
+    Route::get('/bus_stations', [BusStationController::class, 'index'])->name('bus_stations.index');
+    Route::get('/bus_stations/search', [BusStationController::class, 'search'])->name('bus_stations.search');
+    Route::get('/bus_stations/create', [BusStationController::class, 'create'])->name('bus_stations.create');
+    Route::post('/bus_stations', [BusStationController::class, 'store'])->name('bus_stations.store');
+    Route::get('/bus_stations/{id}/detail', [BusStationController::class, 'detail'])->name('bus_stations.detail');
+    Route::get('/bus_stations/{id}/edit', [BusStationController::class, 'edit'])->name('bus_stations.edit');
+    Route::put('/bus_stations/{id}', [BusStationController::class, 'update'])->name('bus_stations.update');
+    Route::post('/bus_stations/delete', [BusStationController::class, 'destroyMulti'])->name('bus_stations.destroy.multi');
+});
 
 Route::middleware(['role:PO'])->group(function () {
     //Route for Drivers
@@ -67,11 +115,31 @@ Route::middleware(['role:PO'])->group(function () {
     Route::get('/api/bus-coordinates/{id}', [BussesController::class, 'getCoordinates']);
 });
 
+Route::middleware(['role:Admin'])->group(function () {
+    // route for reservations
+    Route::get('/reservations/create', [ReservationController::class, 'create'])->name('reservations.create');
+    Route::post('/reservations', [ReservationController::class, 'store'])->name('reservations.store');
+    Route::get('/reservations/{reservation}/print', [ReservationController::class, 'print'])->name('reservations.print');
+    Route::get('/search-user', [ReservationController::class, 'searchUser'])->name('search-user');
+});
 
 Route::middleware(['role:Root|Upt|Admin|PO'])->group(function () {
+    Route::get('/schedules/search', [ScheduleController::class, 'search'])->name('schedules.search');
     Route::get('/schedules', [ScheduleController::class, 'index'])->name('schedules.index');
     Route::get('/schedules/{id}/detail', [ScheduleController::class, 'detail'])->name('schedules.detail');
     Route::get('/schedules/search', [ScheduleController::class, 'search'])->name('schedules.search');
+
+    // route for banks
+    Route::get('/banks', [BankController::class, 'index'])->name('banks.index');
+    Route::get('/banks/search', [BankController::class, 'search'])->name('banks.search');
+    Route::get('/banks/create', [BankController::class, 'create'])->name('banks.create');
+    Route::post('/banks', [BankController::class, 'store'])->name('banks.store');
+    Route::get('/banks/{id}/detail', [BankController::class, 'detail'])->name('banks.detail');
+    Route::get('/banks/{id}/edit', [BankController::class, 'edit'])->name('banks.edit');
+    Route::put('/banks/{id}', [BankController::class, 'update'])->name('banks.update');
+    Route::post('/banks/delete', [BankController::class, 'destroyMulti'])->name('banks.destroy.multi');
+
+    Route::get('/reservations', [ReservationController::class, 'index'])->name('reservations.index');
 });
 
 Route::middleware(['role:Root|PO'])->group(function () {
@@ -79,61 +147,14 @@ Route::middleware(['role:Root|PO'])->group(function () {
     Route::put('/schedules/{id}', [ScheduleController::class, 'update'])->name('schedules.update');
 });
 
-Route::middleware(['role:Root'])->group(function () {
-    Route::get('/upts', [UptController::class, 'index'])->name('upts.index');
-    Route::get('/upts/search', [UptController::class, 'search'])->name('upts.search');
-    Route::get('/upts/create', [UptController::class, 'create'])->name('upts.create');
-    Route::post('/upts', [UptController::class, 'store'])->name('upts.store');
-    Route::get('/upts/{id}/edit', [UptController::class, 'edit'])->name('upts.edit');
-    Route::get('/upts/{id}/detail', [UptController::class, 'detail'])->name('upts.detail');
-    Route::put('/upts/{id}', [UptController::class, 'update'])->name('upts.update');
-    Route::post('/upts/delete', [UptController::class, 'destroyMulti'])->name('upts.destroy.multi');
-
-    Route::get('/otobuses', [OtobusController::class, 'index'])->name('otobuses.index');
-    Route::get('/otobuses/search', [OtobusController::class, 'search'])->name('otobuses.search');
-    Route::get('/otobuses/create', [OtobusController::class, 'create'])->name('otobuses.create');
-    Route::post('/otobuses', [OtobusController::class, 'store'])->name('otobuses.store');
-    Route::get('/otobuses/{id}/edit', [OtobusController::class, 'edit'])->name('otobuses.edit');
-    Route::get('/otobuses/{id}/detail', [OtobusController::class, 'detail'])->name('otobuses.detail');
-    Route::put('/otobuses/{id}', [OtobusController::class, 'update'])->name('otobuses.update');
-    Route::post('/otobuses/delete', [OtobusController::class, 'destroyMulti'])->name('otobuses.destroy.multi');
-
-    //Route for schedules
-    Route::get('/schedules/create', [ScheduleController::class, 'create'])->name('schedules.create');
-    Route::post('/schedules', [ScheduleController::class, 'store'])->name('schedules.store');
-    Route::post('/schedules/delete', [ScheduleController::class, 'destroyMulti'])->name('schedules.destroy.multi');
+Route::middleware(['role:Root|Upt|Admin'])->group(function () {
+    Route::get('/transits', [TransitController::class, 'index'])->name('transits.index');
 });
-
-
-Route::middleware(['role:Upt'])->group(function () {
-    //route for admins
-    Route::get('/admins', [AdminController::class, 'index'])->name('admins.index');
-    Route::get('/admins/search', [AdminController::class, 'search'])->name('admins.search');
-    Route::get('/admins/create', [AdminController::class, 'create'])->name('admins.create');
-    Route::post('/admins', [AdminController::class, 'store'])->name('admins.store');
-    Route::get('/admins/{id}/edit', [AdminController::class, 'edit'])->name('admins.edit');
-    Route::get('/admins/{id}/detail', [AdminController::class, 'detail'])->name('admins.detail');
-    Route::put('/admins/{id}', [AdminController::class, 'update'])->name('admins.update');
-    Route::post('/admins/delete', [AdminController::class, 'destroyMulti'])->name('admins.destroy.multi');
-
-    // route for bus_stations
-    Route::get('/bus_stations', [BusStationController::class, 'index'])->name('bus_stations.index');
-    Route::get('/bus_stations/search', [BusStationController::class, 'search'])->name('bus_stations.search');
-    Route::get('/bus_stations/create', [BusStationController::class, 'create'])->name('bus_stations.create');
-    Route::post('/bus_stations', [BusStationController::class, 'store'])->name('bus_stations.store');
-    Route::get('/bus_stations/{id}/detail', [BusStationController::class, 'detail'])->name('bus_stations.detail');
-    Route::get('/bus_stations/{id}/edit', [BusStationController::class, 'edit'])->name('bus_stations.edit');
-    Route::put('/bus_stations/{id}', [BusStationController::class, 'update'])->name('bus_stations.update');
-    Route::post('/bus_stations/delete', [BusStationController::class, 'destroyMulti'])->name('bus_stations.destroy.multi');
-
-    // route for reservations
-    Route::get('/reservations', [ReservationController::class, 'index'])->name('reservations.index');
-});
-
 
 Route::get('/track/bus', function () {
     return view('maps.index');
-}); 
+});
+
 
 
 

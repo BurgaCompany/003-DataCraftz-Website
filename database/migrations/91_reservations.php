@@ -22,7 +22,8 @@ return new class extends Migration
             $table->integer('tickets_booked');
             $table->date('date_departure');
             $table->integer('total_price')->default(0);
-            $table->enum('status', [1, 2]);
+            $table->enum('status', ['Berhasil Dibayar', 'Pembayaran Pending', 'Pembayaran Cancel']);
+            $table->enum('payment_method', ['Online', 'Offline']);
             $table->timestamps();
             $table->foreign('user_id')->references('id')->on('users');
             $table->foreign('bus_id')->references('id')->on('busses');

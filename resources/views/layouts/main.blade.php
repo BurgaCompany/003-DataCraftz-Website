@@ -19,6 +19,7 @@
         <link href="../../assets/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet">
         <link href="../../assets/plugins/font-awesome/css/all.min.css" rel="stylesheet">
         <link href="../../assets/plugins/toastr/toastr.min.css" rel="stylesheet">
+        
 
         <link rel="icon" href="assets/images/favicon.png" type="image/x-icon">
 
@@ -123,20 +124,12 @@
         <!-- Leaflet-Geosearch JS -->
         <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
         <script src="https://unpkg.com/leaflet-polylinedecorator/leaflet.polylineDecorator.js"></script>
-
-
-        
-        
         <script src="../../assets/plugins/toastr/toastr.min.js"></script>
         <script src="../../assets/plugins/select2/js/select2.full.min.js"></script>
-        
         <script src="../../assets/js/pages/toastr.js"></script>
-       
         <script src="../../assets/js/lime.min.js"></script>
         <script src="../../assets/js/pages/select2.js"></script>
-
         <script src="../../assets/js/custom.js"></script>
-        
         <script src="../../assets/js/map.js"></script>
         {{-- <script src="../../assets/js/track.js"></script> --}}
         <script src="../../assets/js/search.js"></script>
@@ -147,7 +140,36 @@
         <script src="../../assets/js/upload.js"></script>
         <script src="../../assets/js/select.js"></script>
 
-        
+        @if(Route::currentRouteName() == 'reservations.print')
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/print-this@1.15.0/printThis.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.0/dist/JsBarcode.all.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Generate barcode based on order id
+            JsBarcode("#barcodeCanvas", "{{ $reservation->order_id }}", {
+                format: "CODE128",
+                displayValue: true,
+                fontSize: 14,
+                textMargin: 0,
+                width: 2,
+                height: 40,
+            });
+
+            // Handle print button click
+            $('#printButton').on('click', function() {
+                $('.col-xl-4').printThis({
+                    importCSS: true,
+                    loadCSS: "../../assets/css/print.css",
+                    pageTitle: "",
+                    removeInline: false,
+                    printContainer: true
+                });
+            });
+        });
+    </script>
+@endif
+
         @if(Route::currentRouteName() == 'busses.detail')
         <script>
             document.addEventListener("DOMContentLoaded", function () {
@@ -209,6 +231,120 @@
             // Initial fetch to set the marker position immediately
             fetchCoordinates();
         });
+        </script>
+        @endif
+
+        @if(Route::currentRouteName() == 'reservations.create')
+        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                var phoneInput = document.getElementById('phone_number');
+                var nameInput = document.getElementById('name');
+                var addressInput = document.getElementById('address');
+        
+                var searchByPhoneButton = document.getElementById('search_by_phone');
+                var searchByNameButton = document.getElementById('search_by_name');
+        
+                if (searchByPhoneButton) {
+                    searchByPhoneButton.addEventListener('click', function () {
+                        var phoneNumber = phoneInput.value.trim();
+        
+                        if (phoneNumber.length === 0) {
+                            alert('Masukkan nomor handphone terlebih dahulu');
+                            return;
+                        }
+        
+                        var params = { phone_number: phoneNumber };
+        
+                        // Send AJAX request to search for user
+                        axios.get('/search-user', {
+                            params: params
+                        })
+                        .then(function (response) {
+                            var userData = response.data;
+                            console.log('User data:', userData);
+        
+                            // If user data found, populate the form fields
+                            if (userData) {
+                                nameInput.value = userData.name;
+                                addressInput.value = userData.address;
+                            } else {
+                                // If user not found, clear the form fields
+                                nameInput.value = '';
+                                addressInput.value = '';
+                                toastr.info('Data pengguna tidak ditemukan');
+                            }
+                        })
+                        .catch(function (error) {
+                            console.error('Error searching user:', error);
+                        });
+                    });
+                }
+        
+                if (searchByNameButton) {
+                    searchByNameButton.addEventListener('click', function () {
+                        var name = nameInput.value.trim();
+        
+                        if (name.length === 0) {
+                            alert('Masukkan nama terlebih dahulu');
+                            return;
+                        }
+        
+                        var params = { name: name };
+        
+                        // Send AJAX request to search for user
+                        axios.get('/search-user', {
+                            params: params
+                        })
+                        .then(function (response) {
+                            var userData = response.data;
+                            console.log('User data:', userData);
+        
+                            // If user data found, populate the form fields
+                            if (userData) {
+                                phoneInput.value = userData.phone_number;
+                                addressInput.value = userData.address;
+                            } else {
+                                // If user not found, clear the form fields
+                                phoneInput.value = '';
+                                addressInput.value = '';
+                                toastr.info('Data pengguna tidak ditemukan');
+                            }
+                        })
+                        .catch(function (error) {
+                            console.error('Error searching user:', error);
+                        });
+                    });
+                }
+            });
+        </script>
+        
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+            var ticketCountInput = document.getElementById('tickets_booked');
+            var totalPriceInput = document.getElementById('total_price');
+            var availableChairs = {{ $availableChairs }};
+            var price = {{ $price }};
+
+            function formatNumber(num) {
+                return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+            }
+
+            ticketCountInput.addEventListener('input', function () {
+                var ticketCount = parseInt(ticketCountInput.value);
+
+                // Check if ticket count exceeds available chairs
+                if (ticketCount > availableChairs) {
+                    ticketCount = availableChairs; // Set ticket count to available chairs
+                    ticketCountInput.value = availableChairs; // Update input field value
+                }
+
+                var totalPrice = ticketCount * price;
+                totalPriceInput.value = formatNumber(totalPrice); // Update the total price field
+            });
+        });
+
         </script>
         @endif
 
@@ -286,6 +422,8 @@
             });
         </script>
         @endif
+
+        @if(Route::currentRouteName() == 'schedules.index')
         <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.4/xlsx.full.min.js"></script>
         <script>
             document.addEventListener("DOMContentLoaded", function() {
@@ -327,8 +465,38 @@
                 });
             });
         </script>
-        
+        @endif
 
+        
+            @if(Route::currentRouteName() == 'schedules.edit')
+            <script>
+                document.addEventListener('DOMContentLoaded', function () {
+                function validatePrices() {
+                    var minPrice = parseFloat(document.getElementById("min_price").value) || 0;
+                    var maxPrice = parseFloat(document.getElementById("max_price").value) || Infinity;
+                    var priceInput = document.getElementById("price");
+                    var price = parseFloat(priceInput.value);
+
+                    if (price < minPrice) {
+                        priceInput.setCustomValidity("Harga tidak boleh kurang dari harga minimum.");
+                    } else if (price > maxPrice) {
+                        priceInput.setCustomValidity("Harga tidak boleh lebih dari harga maksimum.");
+                    } else {
+                        priceInput.setCustomValidity(""); // Clear any previous custom validity message
+                    }
+                }
+
+                var minPriceInput = document.getElementById("min_price");
+                var maxPriceInput = document.getElementById("max_price");
+                var priceInput = document.getElementById("price");
+
+                // Add event listeners to validate prices on input
+                minPriceInput.addEventListener('input', validatePrices);
+                maxPriceInput.addEventListener('input', validatePrices);
+                priceInput.addEventListener('input', validatePrices);
+            });
+            @endif
+            </script>
 
             @if(session('message'))
         <script>    

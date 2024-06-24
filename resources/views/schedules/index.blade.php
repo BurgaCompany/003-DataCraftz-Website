@@ -107,6 +107,19 @@
                                                 </a>
                                             </div>
                                             @endif
+                                            @if(auth()->user()->hasRole('Admin'))
+                                            @php
+                                                $isDisabled = !in_array($schedule->from_station_id, $busStationIds);
+                                            @endphp
+
+                                            @if (!$isDisabled)
+                                                <div class="btn-group" role="group" aria-label="Basic example">
+                                                    <a href="{{ route('reservations.create', ['schedule_id' => $schedule->id]) }}" class="btn btn-success" data-toggle="tooltip" data-placement="top" title="Tambah">
+                                                        <i class="fas fa-plus"></i>
+                                                    </a>
+                                                </div>
+                                            @endif
+                                        @endif
                                         </td>
                                     </tr>
                                     @endforeach

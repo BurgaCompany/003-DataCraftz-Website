@@ -85,11 +85,8 @@
                                         <div class="form-group">
                                             <label for="min_price">Penentuan Harga</label>
                                             <div class="input-group">
-                                                <input type="number" class="form-control" name="price" id="price" placeholder="Penentuan Harga" required value="{{ old('price', $schedules->price) }}" min="0"   {{ Auth::user()->hasRole('Root') ? 'disabled' : '' }}
-                                                    @if($buss->class == 'Patas')
-                                                    @else
-                                                        oninput="validatePrice()"
-                                                    @endif>
+                                                <input type="number" class="form-control" name="price" id="price" placeholder="Penentuan Harga" required value="{{ old('price', $schedules->price) }}"  {{ !Auth::user()->has('PO') ? '' : 'disabled' }}
+                                                    
                                             </div>
                                         </div>
                                     </div>

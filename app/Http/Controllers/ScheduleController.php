@@ -9,28 +9,98 @@ use App\Models\Schedule;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\DB;
 
 
 class ScheduleController extends Controller
 {
+
     public function index()
     {
-        $schedules = Schedule::with([
+        // Get the logged-in user
+        $user = auth()->user();
+
+        // Initialize the query with bus schedules and their trashed buses
+        $query = Schedule::with([
             'bus' => function ($query) {
                 $query->withTrashed();
             }
-        ])->get();
+        ]);
+
+        // Check if the user has the 'Admin' role
+        if ($user->hasRole('Admin')) {
+            // Get the bus station IDs associated with the user
+            $busStationIds = DB::table('admin_bus_station')
+                ->where('user_id', $user->id)
+                ->pluck('bus_station_id')->toArray();
+
+            // Filter the schedules by the bus station IDs for both from_station and to_station
+            $query->where(function ($query) use ($busStationIds) {
+                $query->whereIn('from_station_id', $busStationIds)
+                    ->orWhereIn('to_station_id', $busStationIds);
+            });
+        } elseif ($user->hasRole('PO')) {
+            // If the user has role 'Po', filter schedules by bus ID associated with Po
+            $busStationIds = DB::table('busses')
+                ->where('id_po', $user->id) // Assuming the field name is 'po_id' in 'buses' table
+                ->pluck('id')->toArray();
+
+            // Filter schedules by bus IDs associated with the Po
+            $query->whereIn('bus_id', $busStationIds);
+        } elseif ($user->hasRole('Upt')) {
+            // If the user has role 'Upt', filter schedules by bus ID associated with Upt
+            $busStationIds = DB::table('user_bus_station')
+                ->where('user_id', $user->id)
+                ->pluck('bus_station_id')->toArray();
+
+            $query->where(function ($query) use ($busStationIds) {
+                $query->whereIn('from_station_id', $busStationIds)
+                    ->orWhereIn('to_station_id', $busStationIds);
+            });
+        } else {
+            $busStationIds = [];
+        }
+
+        // Get the filtered or unfiltered schedules
+        $schedules = $query->get();
+
+        // Return the view with the schedules
+        return view('schedules.index', compact('schedules', 'busStationIds'));
+    }
+
+    public function search(Request $request)
+    {
+        $search = $request->input('search');
+
+        $query = Schedule::with([
+            'bus' => function ($query) {
+                $query->withTrashed();
+            },
+            'fromStation',
+            'toStation'
+        ]);
+
+        // Pencarian berdasarkan nama bus atau nama terminal tujuan
+        if ($search) {
+            $query->whereHas('bus', function ($q) use ($search) {
+                $q->where('name', 'like', '%' . $search . '%');
+            })->orWhereHas('toStation', function ($q) use ($search) {
+                $q->where('name', 'like', '%' . $search . '%');
+            });
+        }
+
+        $schedules = $query->get();
 
         return view('schedules.index', compact('schedules'));
     }
+
+
     // routes/web.php atau di controller lainnya
 
     public function create()
     {
         // Ambil data bus dari model Bus
         $busses = Buss::all();
-
-        // Ambil data stasiun bus dari model BusStation
         $busStations = BusStation::all();
 
         return view('schedules.create', compact('busses', 'busStations'));
@@ -68,7 +138,7 @@ class ScheduleController extends Controller
                         'to_station_id' => $request->tobusStations[$key],
                         'min_price' => $request->min_price,
                         'max_price' => $request->max_price,
-                        'price' => $request->price,
+                        'price' => $request->min_price,
                         'time_start' => $request->time_start,
                         'time_arrive' => $request->time_arrive,
                         'created_at' => Carbon::now(),

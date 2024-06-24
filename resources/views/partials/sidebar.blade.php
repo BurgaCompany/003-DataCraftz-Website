@@ -44,11 +44,6 @@
                             <i class="material-icons">departure_board</i>Management Terminal
                         </a>
                     </li>
-                    <li>
-                        <a href="{{ route('reservations.index') }}" class="{{ request()->is('reservations*') ? 'active' : '' }}">
-                            <i class="material-icons">history</i>Riwayat Pemesanan
-                        </a>
-                    </li>
                 @endif
             @endauth
 
@@ -69,9 +64,26 @@
                     </a>
                 </li>
             @endif
+            @if(Auth::check() && Auth::user()->hasAnyRole(['Root', 'Upt', 'Admin']))
+            <li>
+                <a href="{{ route('transits.index') }}" class="{{ request()->is('transits*') ? 'active' : '' }}">
+                    <i class="material-icons">directions_bus</i>Data Transit
+                </a>
+            </li>
+            @endif
             <li>
                 <a href="{{ route('schedules.index') }}" class="{{ request()->is('schedules*') ? 'active' : '' }}">
                     <i class="material-icons">schedule</i>Jadwal
+                </a>
+            </li>
+            <li>
+                <a href="{{ route('banks.index') }}" class="{{ request()->is('banks*') ? 'active' : '' }}">
+                    <i class="material-icons">account_balance</i>Akun Bank
+                </a>
+            </li>
+            <li>
+                <a href="{{ route('reservations.index') }}" class="{{ request()->is('reservations*') ? 'active' : '' }}">
+                    <i class="material-icons">history</i>Riwayat Pemesanan
                 </a>
             </li>
         </ul>

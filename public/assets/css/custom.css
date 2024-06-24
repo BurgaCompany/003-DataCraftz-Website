@@ -70,3 +70,37 @@
     border-radius: 50%; /* Membuat gambar menjadi lingkaran */
     object-fit: cover; /* Memastikan gambar tidak terdistorsi */
 }
+
+.ticket-container {
+    width: 600px; /* Adjust width as needed */
+    margin: 50px auto; /* Center the ticket horizontally */
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+  }
+  
+  .ticket-title {
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 20px;
+  }
+  
+  .ticket-data {
+    line-height: 1.5; /* Improve readability */
+  }
+  
+  .ticket-barcode {
+    text-align: center;
+    margin-top: 20px;
+  }
+  
+  .ticket-actions {
+    text-align: center;
+    margin-top: 30px;
+  }
+  
+
+  

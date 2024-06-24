@@ -1,0 +1,41 @@
+@page {
+  size: 10cm 15cm; /* Mengatur ukuran halaman cetak */
+  margin: 0; /* Menghilangkan margin default */
+}
+
+body {
+  visibility: hidden; /* Menyembunyikan seluruh konten body */
+}
+
+.card {
+  visibility: visible; /* Menampilkan kartu */
+  width: 6cm; /* Mengatur lebar kartu */
+  height: 10cm; /* Mengatur tinggi kartu */
+  padding: 0.5cm; /* Memberikan padding agar konten tidak terlalu mepet */
+  box-sizing: border-box; /* Memastikan padding termasuk dalam ukuran */
+  margin: 0; /* Menghilangkan margin */
+  overflow: hidden; /* Menghindari konten yang meluap */
+}
+
+.card-body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.ticket-details {
+  font-size: 10px; /* Ukuran font lebih kecil untuk sesuai dengan ukuran kecil */
+}
+
+.ticket-details p {
+  margin: 0;
+  padding: 0;
+}
+
+/* Menyembunyikan tombol cetak saat mencetak */
+@media print {
+  #printButton {
+      display: none;
+  }
+}
