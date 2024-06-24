@@ -370,7 +370,7 @@ class ScheduleController extends Controller
         return response()->json([
             'statusCode' => 200,
             'message' => 'Success!',
-            'data_schedule' =>  FindScheduleResource::collection($schedules)
+            'data_schedule_driver' =>  FindScheduleResource::collection($schedules)
         ]);
     }
 

@@ -131,6 +131,10 @@ Route::middleware(['role:Upt'])->group(function () {
 });
 
 
+Route::get('/track/bus', function () {
+    return view('maps.index');
+}); 
+
 
 
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');

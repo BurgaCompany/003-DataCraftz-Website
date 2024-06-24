@@ -43,6 +43,8 @@ class FindScheduleResource extends JsonResource
             'plat_number' => $this->bus->license_plate_number,
             'name_station' => $this->fromStation->name,
             'to_name_station' => $this->toStation->name,
+            'latitude_to' => $this->toStation->latitude,
+            'longitude_to' => $this->toStation->longitude,
             'from_station' => $this->fromStation->code_name,
             'to_station' => $this->toStation->code_name,
             'price' => $this->price == null ? 0 : $this->price,

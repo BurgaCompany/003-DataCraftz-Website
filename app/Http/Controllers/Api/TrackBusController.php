@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Buss;
+use App\Models\BusStation;
 use App\Models\track_bus;
 use Illuminate\Http\Request;
 
@@ -46,6 +47,25 @@ class TrackBusController extends Controller
         return response()->json([
             'message' => 'Location updated',
             'data' => $trackBus
+        ]);
+    }
+
+
+    public function getCoordinates(Request $request)
+    {
+        
+        $FromStation = BusStation::where('name', )->first();
+        $ToStation = BusStation::where('name', )->first();
+
+        return response()->json([
+            'bondowoso' => [
+                'lat' => $FromStation->latitude,
+                'lng' => $FromStation->longitude
+            ],
+            'arjasa' => [
+                'lat' => $ToStation->latitude,
+                'lng' => $ToStation->longitude
+            ]
         ]);
     }
 }
