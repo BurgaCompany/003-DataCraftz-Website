@@ -26,6 +26,7 @@ class MidtransController extends Controller
         $reservation->date_departure = $request->date_departure;
         $reservation->total_price = $gross_amount;
         $reservation->status = 1;
+        $reservation->payment_method = 'Online';
         $reservation->save();
         
 

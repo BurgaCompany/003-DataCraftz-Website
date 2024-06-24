@@ -376,11 +376,20 @@ class ScheduleController extends Controller
 
     public function upStatusDriver(Request $request)
     {
-        $status = new ScheduleStatus();
-        $status->schedule_id = $request->schedule_id;
-        $status->status = $request->status;
-        $status->date = $request->date;
-        $status->save();
+        $statusBus = Buss::find($request->bus_id);
+        if ($statusBus == null) {
+            return response()->json([
+                'statusCode' => 400,
+                'message' => 'data tidak ditemukan'
+            ], 400);
+        }
+
+        if ($request->status == 'Selesai') {
+            $statusBus->status = 'Belum Berangkat';
+        } else {
+            $statusBus->status = $request->status;
+        }
+        $statusBus->save();
 
         return response()->json([
             'statusCode' => 200,
