@@ -16,16 +16,15 @@ return new class extends Migration
         Schema::create('busses', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('license_plate_number', 13); // maksimal 13 karakter
-            $table->integer('chair')->unsigned(); // maksimal 2 kursi
-            $table->enum('class', ['Ekonomi', 'Patas']); // pilihan ekonomi atau bisnis
-            $table->enum('status', ['Belum Berangkat', 'Berangkat', 'Terkendala', 'Sampai di tujuan'])->default('Belum Berangkat');
-            $table->string('information')->nullable(); // Field untuk keterangan tambahan jika status adalah 4
+            $table->string('license_plate_number', 13); 
+            $table->integer('chair')->unsigned(); 
+            $table->enum('class', ['Ekonomi', 'Patas']);
+            $table->enum('status', ['Belum Berangkat', 'Berangkat', 'Terkendala', 'Selesai'])->default('Belum Berangkat');
+            $table->string('information')->nullable();
             $table->string('images')->nullable();
             $table->unsignedBigInteger('id_po')->nullable();
             $table->softDeletes();
             $table->timestamps();
-
             $table->foreign('id_po')->references('id')->on('users')->onDelete('cascade');
         });
     }
