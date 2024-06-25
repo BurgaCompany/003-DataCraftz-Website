@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Buss;
 use App\Models\BusStation;
 use App\Models\track_bus;
+use App\Models\TrackBus;
 use Illuminate\Http\Request;
 
 class TrackBusController extends Controller
@@ -50,22 +51,14 @@ class TrackBusController extends Controller
         ]);
     }
 
-
     public function getCoordinates(Request $request)
     {
-        
-        $FromStation = BusStation::where('name', )->first();
-        $ToStation = BusStation::where('name', )->first();
+        $buss_id = $request->query('bus_id');
+        $buss = TrackBus::where('bus_id', $buss_id)->first();
 
         return response()->json([
-            'bondowoso' => [
-                'lat' => $FromStation->latitude,
-                'lng' => $FromStation->longitude
-            ],
-            'arjasa' => [
-                'lat' => $ToStation->latitude,
-                'lng' => $ToStation->longitude
-            ]
+            'latitude' => $buss->latitude,
+            'longitude' => $buss->longitude,
         ]);
     }
 }

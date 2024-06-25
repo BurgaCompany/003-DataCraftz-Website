@@ -29,12 +29,16 @@
 </head>
 
 <body>
-    <div id="track_map" style="height: 100vh;"></div>
+    <div id="map" style="height: 100vh;"></div>
 
     
     {{-- <script src="../../assets/js/map.js"></script> --}}
 
     <script src="../../assets/js/track.js"></script>
+
+    <!-- socket io -->
+    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+
     <!-- Leaflet JS -->
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <!-- Leaflet-Geosearch JS -->

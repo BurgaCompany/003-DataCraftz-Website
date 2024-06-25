@@ -1,56 +1,72 @@
 document.addEventListener("DOMContentLoaded", function () {
-    var map = L.map("track_map").setView(
-        [-7.915985771560524, 113.8318605422319],
-        12
-    ); // Set initial map center and zoom level
+    // Initialize the map with a higher zoom level
+    var map = L.map("map").setView([-6.2, 106.816666], 17);
 
-    // Add OpenStreetMap tile layer to the map
+    // Add OpenStreetMap tile layer
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-        maxZoom: 19,
+        attribution:
+            '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     }).addTo(map);
 
-    // Terminal Bondowoso coordinates
-    var terminalBondowoso = L.latLng(-7.915985771560524, 113.8318605422319);
+    var marker;
 
-    // Terminal Arjasa coordinates
-    var terminalArjasa = L.latLng(-8.1180522, 113.7479288);
+    // Function to fetch data from the server
+    function fetchData() {
+        const queryParams = new URLSearchParams(window.location.search);
+        const busId = queryParams.get("bus_id");
+        fetch(`http://localhost:8000/api/get-coordinate?bus_id=${busId}`) // Update with your API endpoint
+            .then((response) => response.json())
+            .then((data) => {
+                console.log("Data fetched:", data);
+                var lat = parseFloat(data.latitude);
+                var lng = parseFloat(data.longitude);
 
-    // Create a bus icon
-    var busIcon = L.icon({
-        iconUrl:
-            "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png",
-        iconSize: [25, 41],
-        iconAnchor: [12, 41],
-        popupAnchor: [1, -34],
-        shadowSize: [41, 41],
-    });
+                // Update marker position if it exists, otherwise create a new marker
+                if (marker) {
+                    marker.setLatLng([lat, lng]);
+                } else {
+                    var greenIcon = L.icon({
+                        iconUrl:
+                            "http://localhost:8000/assets/images/Icon-Marker.png",
 
-    // Create a marker at Terminal Bondowoso with the bus icon
-    var marker = L.marker(terminalBondowoso, { icon: busIcon }).addTo(map);
+                        iconSize: [95, 95], // size of the icon
+                        shadowSize: [50, 64], // size of the shadow
+                        iconAnchor: [22, 94], // point of the icon which will correspond to marker's location
+                        shadowAnchor: [4, 62], // the same for the shadow
+                        popupAnchor: [-3, -76], // point from which the popup should open relative to the iconAnchor
+                    });
+                    marker = L.marker([lat, lng], { icon: greenIcon }).addTo(
+                        map
+                    );
+                }
 
-    // Animate marker movement from Terminal Bondowoso to Terminal Arjasa
-    var duration = 10000; // Animation duration in milliseconds (10 seconds)
-    var steps = 10000; // Number of steps for animation
-    var stepTime = duration / steps; // Time for each step
+                // Update map view
+                map.setView([lat, lng], 17);
 
-    var latStep = (terminalArjasa.lat - terminalBondowoso.lat) / steps;
-    var lngStep = (terminalArjasa.lng - terminalBondowoso.lng) / steps;
+                // Update form input values
+                document.getElementById("latitude").value = lat;
+                document.getElementById("longitude").value = lng;
 
-    function moveMarker() {
-        var currentLatLng = marker.getLatLng();
-        var newLatLng = L.latLng(
-            currentLatLng.lat + latStep,
-            currentLatLng.lng + lngStep
-        );
-        marker.setLatLng(newLatLng);
-
-        // Pan the map to follow the marker
-        map.panTo(newLatLng);
-
-        if (marker.getLatLng().equals(terminalArjasa)) {
-            clearInterval(timer);
-        }
+                // Reverse geocode to get the address
+                var geocodeService = L.Control.Geocoder.nominatim();
+                geocodeService.reverse(
+                    [lat, lng],
+                    map.options.crs.scale(map.getZoom()),
+                    function (results) {
+                        var result = results[0];
+                        if (result) {
+                            document.getElementById("address").value =
+                                result.name;
+                        }
+                    }
+                );
+            })
+            .catch((error) => console.error("Error fetching data:", error));
     }
 
-    var timer = setInterval(moveMarker, stepTime);
+    // Initial fetch of data
+    fetchData();
+
+    // Polling to fetch data every 30 seconds (30000 milliseconds)
+    setInterval(fetchData, 5000);
 });
