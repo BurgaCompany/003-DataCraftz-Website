@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // Function to fetch data from the server
     function fetchData() {
         const queryParams = new URLSearchParams(window.location.search);
-        const busId = queryParams.get("bus_id");
+        const busId = queryParams.get("bu_id");
         fetch(`http://localhost:8000/api/get-coordinate?bus_id=${busId}`) // Update with your API endpoint
             .then((response) => response.json())
             .then((data) => {
