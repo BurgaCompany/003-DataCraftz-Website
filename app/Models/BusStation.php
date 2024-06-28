@@ -37,4 +37,8 @@ class BusStation extends Model
     {
         return $this->belongsToMany(User::class, 'admin_bus_station', 'bus_station_id', 'user_id');
     }
+    public function deposits()
+    {
+        return $this->hasMany(Deposit::class);
+    }
 }

@@ -20,6 +20,8 @@ class Reservation extends Model
         'status',
         'total_price',
         'payment_method',
+        'deposit_status',
+        'reqs_status',
     ];
 
     protected $attributes = [

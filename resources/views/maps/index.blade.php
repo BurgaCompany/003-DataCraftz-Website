@@ -23,15 +23,15 @@
         }
     </style>
     <!-- Leaflet CSS -->
-        <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 
-        <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css"/>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
 </head>
 
 <body>
     <div id="map" style="height: 100vh;"></div>
 
-    
+
     {{-- <script src="../../assets/js/map.js"></script> --}}
 
     <script src="../../assets/js/track.js"></script>

@@ -24,6 +24,8 @@ return new class extends Migration
             $table->integer('total_price')->default(0);
             $table->enum('status', ['1', '2']);
             $table->enum('payment_method', ['Online', 'Offline']);
+            $table->enum('deposit_status', ['Pending', 'Done'])->nullable();
+            $table->enum('reqs_status', ['Pending', 'Done'])->nullable();
             $table->timestamps();
             $table->foreign('user_id')->references('id')->on('users');
             $table->foreign('bus_id')->references('id')->on('busses');

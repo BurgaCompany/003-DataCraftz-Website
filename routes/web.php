@@ -10,7 +10,10 @@ use App\Http\Controllers\BussesController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\UptController;
 use App\Http\Controllers\BusStationController;
+use App\Http\Controllers\DashboardAdminController;
 use App\Http\Controllers\DashboardPoController;
+use App\Http\Controllers\DashboardUptController;
+use App\Http\Controllers\DepositController;
 use App\Http\Controllers\DriverController;
 use App\Http\Controllers\LandingController;
 use App\Http\Controllers\MidtransController;
@@ -25,8 +28,8 @@ Route::get('/', [LandingController::class, 'index'])->name('landing');
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [LoginController::class, 'login'])->name('login.submit');
 
-Route::get('/dashboard', [DashboardController::class, 'index'])->middleware('role:Upt|Admin')->name('dashboard');
-Route::get('/dashboard_po', [DashboardPoController::class, 'index'])->middleware('role:PO')->name('dashboard_po');
+// Route::get('/dashboard', [DashboardController::class, 'index'])->middleware('role:Upt|Admin')->name('dashboard');
+
 
 Route::get('/profile', [ProfileController::class, 'show'])->middleware('role:Root|Upt|Admin|PO')->name('profile');
 Route::post('/profile/update-image', [ProfileController::class, 'updateImage'])->middleware('role:Root|Upt|Admin|PO')->name('profile.update-image');
@@ -56,9 +59,14 @@ Route::middleware(['role:Root'])->group(function () {
     Route::get('/schedules/create', [ScheduleController::class, 'create'])->name('schedules.create');
     Route::post('/schedules', [ScheduleController::class, 'store'])->name('schedules.store');
     Route::post('/schedules/delete', [ScheduleController::class, 'destroyMulti'])->name('schedules.destroy.multi');
+
+    Route::get('/deposits/{id}/edit', [DepositController::class, 'edit'])->name('deposits.edit');
+    Route::put('/deposits/{id}/', [DepositController::class, 'update'])->name('deposits.update');
 });
 
 Route::middleware(['role:Upt'])->group(function () {
+    Route::get('/dashboard_upt', [DashboardUptController::class, 'index'])->name('dashboard_upt');
+
     //route for admins
     Route::get('/admins', [AdminController::class, 'index'])->name('admins.index');
     Route::get('/admins/search', [AdminController::class, 'search'])->name('admins.search');
@@ -81,6 +89,11 @@ Route::middleware(['role:Upt'])->group(function () {
 });
 
 Route::middleware(['role:PO'])->group(function () {
+
+    Route::get('/dashboard_po', [DashboardPoController::class, 'index'])->name('dashboard_po');
+
+    Route::get('/rating/{id}/detail', [DriverController::class, 'rating'])->name('drivers.rating');
+
     //Route for Drivers
     Route::get('/drivers', [DriverController::class, 'index'])->name('drivers.index');
     Route::get('/drivers/search', [DriverController::class, 'search'])->name('drivers.search');
@@ -116,6 +129,9 @@ Route::middleware(['role:PO'])->group(function () {
 });
 
 Route::middleware(['role:Admin'])->group(function () {
+
+    Route::get('/dashboard_admin', [DashboardAdminController::class, 'index'])->name('dashboard_admin');
+
     // route for reservations
     Route::get('/reservations/create', [ReservationController::class, 'create'])->name('reservations.create');
     Route::post('/reservations', [ReservationController::class, 'store'])->name('reservations.store');
@@ -140,6 +156,11 @@ Route::middleware(['role:Root|Upt|Admin|PO'])->group(function () {
     Route::post('/banks/delete', [BankController::class, 'destroyMulti'])->name('banks.destroy.multi');
 
     Route::get('/reservations', [ReservationController::class, 'index'])->name('reservations.index');
+    Route::post('/reservations/depo', [ReservationController::class, 'depo_up'])->name('reservations.depo_up');
+
+    Route::get('/deposits', [DepositController::class, 'index'])->name('deposits.index');
+    //Route::get('/banks/{id}/detail', [BankController::class, 'detail'])->name('deposits.detail');
+    Route::get('/deposits/{id}/detail', [DepositController::class, 'detail'])->name('deposits.detail');
 });
 
 Route::middleware(['role:Root|PO'])->group(function () {

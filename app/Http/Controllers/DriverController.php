@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\review;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Carbon\Carbon;
@@ -12,6 +13,17 @@ use Illuminate\Support\Facades\Auth;
 
 class DriverController extends Controller
 {
+
+    public function rating($id)
+    {
+        $driver = User::findOrFail($id);
+        $reviews = Review::where('user_id', $driver->id)->get();
+
+        // Menghitung rata-rata rating
+        $averageRating = $reviews->avg('rating');
+
+        return view('drivers.rating', compact('driver', 'reviews', 'averageRating'));
+    }
     public function index()
     {
         // Pastikan pengguna telah diautentikasi
@@ -31,13 +43,24 @@ class DriverController extends Controller
                     $driversQuery->where('id_po', $poId);
                 }
 
+                // Ambil data pengguna dengan paginasi
                 $drivers = $driversQuery->paginate(15);
+
+                // Iterasi untuk setiap driver dan hitung rata-rata rating
+                foreach ($drivers as $driver) {
+                    $reviews = Review::where('user_id', $driver->id)->get();
+                    $averageRating = $reviews->isEmpty() ? 0 : $reviews->avg('rating');
+                    $driver->averageRating = $averageRating;
+                }
 
                 // Kembalikan tampilan dengan data pengguna (drivers)
                 return view('drivers.index', compact('drivers'));
             }
         }
     }
+
+
+
 
 
 

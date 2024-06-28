@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Bank;
+use App\Models\Deposits;
 use App\Models\Reservation;
 use App\Models\Role;
 use App\Models\Schedule;
@@ -24,53 +26,84 @@ class ReservationController extends Controller
             'user'
         ]);
 
+        // Menentukan schedule IDs berdasarkan peran pengguna
         if ($user->hasRole('Admin')) {
             $busStationIds = DB::table('admin_bus_station')
                 ->where('user_id', $user->id)
-                ->pluck('bus_station_id')->toArray();
+                ->pluck('bus_station_id')
+                ->toArray();
 
             $scheduleIds = DB::table('schedules')
                 ->whereIn('from_station_id', $busStationIds)
                 ->pluck('id')
                 ->toArray();
 
-            $query->where(function ($query) use ($scheduleIds) {
-                $query->whereIn('schedule_id', $scheduleIds);
-            });
+            $query->whereIn('schedule_id', $scheduleIds);
         } elseif ($user->hasRole('PO')) {
-            $busStationIds = DB::table('busses')
+            $busIds = DB::table('busses')
                 ->where('id_po', $user->id)
-                ->pluck('id')->toArray();
+                ->pluck('id')
+                ->toArray();
 
-            $query->whereIn('bus_id', $busStationIds);
+            $query->whereIn('bus_id', $busIds);
         } elseif ($user->hasRole('Upt')) {
             $busStationIds = DB::table('user_bus_station')
                 ->where('user_id', $user->id)
-                ->pluck('bus_station_id')->toArray();
+                ->pluck('bus_station_id')
+                ->toArray();
 
             $scheduleIds = DB::table('schedules')
                 ->whereIn('from_station_id', $busStationIds)
                 ->pluck('id')
                 ->toArray();
 
-            $query->where(function ($query) use ($scheduleIds) {
-                $query->whereIn('schedule_id', $scheduleIds);
-            });
+            $query->whereIn('schedule_id', $scheduleIds);
         }
 
         $reservations = $query->get();
-        //dd($reservations);
 
-        foreach ($reservations as $reservation) {
-            $reservation->saldo = Reservation::where('schedule_id', $reservation->schedule_id)
-                ->where('payment_method', 'Offline');
+        $totalSaldo = 0; // Inisialisasi totalSaldo
+        $amountCount = 0; // Inisialisasi amountCount untuk peran PO
+
+        $scheduleIds = $reservations->pluck('schedule_id')->unique(); // Collect unique schedule IDs
+
+        foreach ($scheduleIds as $scheduleId) {
+            if ($user->hasRole('PO')) {
+                // Calculate balance for each schedule based on conditions
+                $saldo = Reservation::where('schedule_id', $scheduleId)
+                    ->where('deposit_status', 'Done')
+                    ->where('reqs_status', 'Pending')
+                    ->sum('total_price');
+
+                $amountCount += $saldo;
+            } else {
+                $saldo = Reservation::where('schedule_id', $scheduleId)
+                    ->where('payment_method', 'Offline')
+                    ->where('deposit_status', 'Pending')
+                    ->sum('total_price');
+
+                // Accumulate balance into totalSaldo
+                $totalSaldo += $saldo;
+            }
         }
 
-        // Menghitung total saldo
-        $totalSaldo = $reservations->sum('total_price');
+        // Jika pengguna bukan Admin, ambil balance dari tabel users
+        if ($user->hasAnyRole(['PO', 'Upt', 'Root'])) {
+            $totalSaldo = $user->balance;
+        }
 
-        return view('reservations.index', compact('reservations', 'totalSaldo'));
+        $banks = [];
+        if ($user->hasRole('Admin')) {
+            // Ambil ID PO dari akun yang sedang login
+            $id_upt = $user->id_upt;
+            $banks = Bank::where('user_id', $id_upt)->get();
+        } elseif ($user->hasRole('PO') || $user->hasRole('Upt')) {
+            $banks = Bank::where('user_id', 1)->get();
+        }
+
+        return view('reservations.index', compact('reservations', 'totalSaldo', 'amountCount', 'banks'));
     }
+
 
     public function searchUser(Request $request)
     {
@@ -182,13 +215,113 @@ class ReservationController extends Controller
             'tickets_booked' => $request->input('tickets_booked'),
             'date_departure' => Carbon::now()->toDateString(),
             'total_price' => $total_price_int,
-            'status' => 'Berhasil Dibayar',
+            'status' => 1,
             'payment_method' => 'Offline',
+            'deposit_status' => 'Pending',
+            'reqs_status' => 'Pending',
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
         ]);
 
         return redirect()->route('reservations.print', $reservation->id)->with('success', 'Reservasi berhasil dibuat.');
+    }
+
+    public function depo_up(Request $request)
+    {
+        // Validasi request
+        $request->validate([
+            'amount' => 'required|numeric|min:1',
+            'bank_account' => 'required|exists:banks,id',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Ubah sesuai kebutuhan
+        ]);
+
+        // Handle file upload if there's an image in the request
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('deposits', 'public');
+        } else {
+            $imagePath = null;
+        }
+
+        $user = auth()->user();
+        $busStationIds = $user->adminBusStations()->pluck('id')->toArray();
+
+        // Pilih salah satu stasiun yang akan digunakan dalam deposit
+        $busStationId = reset($busStationIds); // Misalnya, ambil stasiun pertama dari array
+
+        // Buat objek Deposit baru
+        $deposit = new Deposits();
+        $deposit->user_id = Auth::id(); // Ambil ID user yang sedang login
+        $deposit->bank_id = $request->bank_account;
+        $deposit->amount = $request->amount;
+
+        if ($user->hasRole('PO')) {
+            $deposit->type = 'req';
+        } else {
+            $deposit->type = 'send';
+        }
+
+
+        $deposit->images = $imagePath ? $imagePath : null;
+
+        $user = auth()->user();
+
+        if ($user->hasRole('Admin')) {
+            // Jika role Admin, atur bus_station_id
+            $deposit->bus_station_id = $busStationId;
+        }
+
+        // Simpan data deposit ke dalam database
+        $deposit->save();
+
+
+        if ($user->hasRole('Admin')) {
+            $id_upt = $user->id_upt;
+
+            // Update balance user yang terkait dengan ID UPT
+            $uptUser = User::find($id_upt);
+
+            if ($uptUser) {
+                $uptUser->balance += $request->amount; // Tambahkan nilai amount ke balance
+                $uptUser->save();
+            } else {
+                // Handle jika user dengan ID UPT tidak ditemukan
+                return redirect()->back()->with('error', 'User dengan ID UPT tidak ditemukan.');
+            }
+        } elseif ($user->hasRole('Upt')) {
+            $adminUser = User::find(1); // Mengasumsikan ID user admin adalah 1, sesuaikan dengan kebutuhan
+
+            if ($adminUser) {
+                $adminUser->balance += $request->amount; // Tambahkan nilai amount ke balance admin
+                $adminUser->save();
+
+                // Kosongkan balance Upt (pengguna saat ini)
+                $user->balance = 0;
+                $user->save();
+            } else {
+                // Handle jika user admin tidak ditemukan
+                return redirect()->back()->with('error', 'User admin tidak ditemukan.');
+            }
+        }
+
+
+        $reservations = Reservation::get();
+
+        // Iterasi dan ubah deposit_status di setiap reservasi
+        foreach ($reservations as $reservation) {
+            $reservation->deposit_status = 'Done';
+            if ($user->hasRole('PO')) {
+                $reservation->reqs_status = 'Done';
+            }
+            $reservation->save();
+        }
+
+
+
+        // Redirect dengan pesan sukses atau kustomisasi sesuai kebutuhan
+        return redirect()->back()->with('success', 'Setoran berhasil diajukan. Menunggu konfirmasi.');
+
+        // Alternatif: Tampilkan view atau response JSON sesuai kebutuhan aplikasi
+        return view('reservations.index');
     }
 
     public function print($id)

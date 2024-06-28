@@ -9,16 +9,17 @@
                         <div class="card-body">
                             <div class="dashboard-info row">
                                 <div class="info-text col-md-6">
-                                    @if(Auth::check())
-                                    <h5 class="card-title">Selamat Datang, kembali {{ $user->name }}!</h5>
-                                    <p>
-                                        Anda telah masuk ke dalam halaman dashboard. 
-                                    </p>
-                                    <br>
-                                    <p>
-                                        Jangan ragu untuk menjelajahi berbagai fitur yang tersedia dan lakukan tindakan yang diperlukan untuk mengelola aplikasi Anda dengan baik.
-                                    </p>
-                                @endif
+                                    @if (Auth::check())
+                                        <h5 class="card-title">Selamat Datang, kembali {{ $user->name }}!</h5>
+                                        <p>
+                                            Anda telah masuk ke dalam halaman dashboard.
+                                        </p>
+                                        <br>
+                                        <p>
+                                            Jangan ragu untuk menjelajahi berbagai fitur yang tersedia dan lakukan tindakan
+                                            yang diperlukan untuk mengelola aplikasi Anda dengan baik.
+                                        </p>
+                                    @endif
                                 </div>
                                 <div class="info-image col-md-6"></div>
                             </div>
@@ -26,7 +27,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="row">
                 <div class="col-md-4">
                     <a href="{{ route('drivers.index') }}">
@@ -37,7 +38,9 @@
                                 </div>
                                 <h2 class="float-right">{{ $totalDriver }}</h2>
                                 <div class="progress" style="height: 10px;">
-                                    <div class="progress-bar bg-warning" role="progressbar" style="width: {{ $totalDriver }}%" aria-valuenow="{{ $totalDriver }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                    <div class="progress-bar bg-warning" role="progressbar"
+                                        style="width: {{ $totalDriver }}%" aria-valuenow="{{ $totalDriver }}"
+                                        aria-valuemin="0" aria-valuemax="100"></div>
                                 </div>
                             </div>
                         </div>
@@ -48,11 +51,14 @@
                         <div class="card stat-card">
                             <div class="card-body">
                                 <div class="d-flex justify-content-between align-items-center">
-                                    <h5 class="card-title"> <i class="fas fa-bus-alt fa-lg mr-2"></i>Total Kondektur Bus</h5>
+                                    <h5 class="card-title"> <i class="fas fa-bus-alt fa-lg mr-2"></i>Total Kondektur Bus
+                                    </h5>
                                 </div>
                                 <h2 class="float-right">{{ $totalConductor }}</h2>
                                 <div class="progress" style="height: 10px;">
-                                    <div class="progress-bar bg-warning" role="progressbar" style="width: {{ $totalConductor }}%" aria-valuenow="{{ $totalConductor }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                    <div class="progress-bar bg-warning" role="progressbar"
+                                        style="width: {{ $totalConductor }}%" aria-valuenow="{{ $totalConductor }}"
+                                        aria-valuemin="0" aria-valuemax="100"></div>
                                 </div>
                             </div>
                         </div>
@@ -67,7 +73,9 @@
                                 </div>
                                 <h2 class="float-right">{{ $totalBusses }}</h2>
                                 <div class="progress" style="height: 10px;">
-                                    <div class="progress-bar bg-warning" role="progressbar" style="width: {{ $totalBusses }}%" aria-valuenow="{{ $totalBusses }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                    <div class="progress-bar bg-warning" role="progressbar"
+                                        style="width: {{ $totalBusses }}%" aria-valuenow="{{ $totalBusses }}"
+                                        aria-valuemin="0" aria-valuemax="100"></div>
                                 </div>
                             </div>
                         </div>
@@ -83,14 +91,22 @@
                                 <div class="d-flex align-items-center">
                                     <div class="form-group mr-3 mb-0">
                                         <label for="status">Status</label>
-                                        <select class="js-states form-control" name="status" id="status" style="width: 200px;" onchange="filterBusses()" required>
-                                            <option value="" {{ request('status') == '' ? 'selected' : '' }}>Semua</option>
-                                            <option value="1" {{ request('status') == '1' ? 'selected' : '' }}>Belum Berangkat</option>
-                                            <option value="2" {{ request('status') == '2' ? 'selected' : '' }}>Bersedia Berangkat</option>
-                                            <option value="3" {{ request('status') == '3' ? 'selected' : '' }}>Berangkat</option>
-                                            <option value="4" {{ request('status') == '4' ? 'selected' : '' }}>Terkendala</option>
-                                            <option value="5" {{ request('status') == '5' ? 'selected' : '' }}>Tiba di Tujuan</option>
+                                        <select class="js-states form-control" name="status" id="status"
+                                            style="width: 200px;" onchange="filterBusses()" required>
+                                            <option value="" {{ request('status') == '' ? 'selected' : '' }}>Semua
+                                            </option>
+                                            <option value="Belum Berangkat"
+                                                {{ request('status') == 'Belum Berangkat' ? 'selected' : '' }}>Belum
+                                                Berangkat</option>
+                                            <option value="Berangkat"
+                                                {{ request('status') == 'Berangkat' ? 'selected' : '' }}>Berangkat</option>
+                                            <option value="Terkendala"
+                                                {{ request('status') == 'Terkendala' ? 'selected' : '' }}>Terkendala
+                                            </option>
+                                            <option value="Selesai" {{ request('status') == 'Selesai' ? 'selected' : '' }}>
+                                                Selesai</option>
                                         </select>
+
                                     </div>
                                     <h4 class="mb-0 align-middle">
                                         <span class="badge badge-info">Data Bus</span>
@@ -122,7 +138,6 @@
                     </div>
                 </div>
             </div>
-            </div>
         </div>
-        @endsection
- 
+    </div>
+@endsection

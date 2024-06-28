@@ -68,4 +68,8 @@ class User extends Authenticatable
     {
         return $this->hasMany(ApiToken::class);
     }
+    public function deposits()
+    {
+        return $this->hasMany(Deposit::class);
+    }
 }
