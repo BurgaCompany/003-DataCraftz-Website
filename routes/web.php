@@ -176,6 +176,12 @@ Route::get('/track/bus', function () {
     return view('maps.index');
 });
 
+Route::get('/storage-link', function () {
+    $target_folder = base_path() . '/storage/app/public';
+    $link_folder = $_SERVER['DOCUMENT_ROOT'] . "/storage";
+    symlink($target_folder, $link_folder);
+});
+
 
 
 
