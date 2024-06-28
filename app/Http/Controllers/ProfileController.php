@@ -30,36 +30,37 @@ class ProfileController extends Controller
     }
 
     public function updateImage(Request $request)
-    {
-        // Validasi permintaan
-        $request->validate([
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', // Sesuaikan dengan kebutuhan
-        ]);
+{
+    // Validasi permintaan
+    $request->validate([
+        'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', // Sesuaikan dengan kebutuhan
+    ]);
 
-        // Mengambil ID pengguna yang sedang login
-        $userId = Auth::id();
+    // Mengambil ID pengguna yang sedang login
+    $userId = Auth::id();
 
-        // Mengambil data pengguna berdasarkan ID
-        $userProfile = User::findOrFail($userId);
+    // Mengambil data pengguna berdasarkan ID
+    $userProfile = User::findOrFail($userId);
 
-        // Simpan gambar yang diunggah
-        if ($request->hasFile('image')) {
-            // Hapus gambar lama jika ada
-            if ($userProfile->images) {
-                Storage::delete($userProfile->images);
-            }
-
-            // Simpan gambar di storage dengan nama acak dalam direktori 'avatars'
-            $imageName = $request->file('image')->store('avatars');
-
-            // Update kolom gambar pada model pengguna
-            $userProfile->images = $imageName;
-            $userProfile->save();
+    // Simpan gambar yang diunggah
+    if ($request->hasFile('image')) {
+        // Hapus gambar lama jika ada
+        if ($userProfile->images) {
+            Storage::delete('public/' . $userProfile->images);
         }
 
-        // Redirect ke halaman profil dengan pesan sukses
-        return redirect()->route('profile')->with('success', 'Gambar profil berhasil diperbarui.');
+        // Simpan gambar di storage dengan nama acak dalam direktori 'public/avatars'
+        $imageName = $request->file('image')->store('public/avatars');
+
+        // Update kolom gambar pada model pengguna
+        $userProfile->images = str_replace('public/', '', $imageName);
+        $userProfile->save();
     }
+
+    // Redirect ke halaman profil dengan pesan sukses
+    return redirect()->route('profile')->with('success', 'Gambar profil berhasil diperbarui.');
+}
+
 
     public function update(Request $request, $id)
     {
