@@ -28,6 +28,7 @@ Route::prefix('auth')->group(function () {
     Route::post('register', [AuthController::class, 'register']);
     Route::post('login', [AuthController::class, 'login']);
     Route::post('logout', [AuthController::class, 'logout']);
+    Route::post('edit', [AuthController::class, 'edit']);
 });
 
 // Route::middleware(['auth:sanctum'])->group(function () {
@@ -80,7 +81,6 @@ Route::group(['namespace' => 'driver'], function () {
     Route::post('driver/check', [ScheduleController::class, 'upStatusDriver']);
     // Route::get('check/update', [CondectureController::class, 'updateStatusReservation']);
 });
-
 
 
 Route::put('Driver/status/{id}', [DriverAttendanceController::class, 'updateStatus']);
