@@ -142,4 +142,29 @@ class AuthController extends Controller
                 ->format();
         }
     }
+
+    public function edit(Request $request)
+    {
+        try {
+            $id_user = $request->query('id');
+            $user = User::find($id_user);
+            $user->email = $request->email;
+            $user->phone_number = $request->phone;
+            $user->address = $request->address;
+            $user->password = Hash::make($request->password);
+            $user->save();
+
+            return response()->json([
+                'statusCode' => 200,
+                'message' => 'Success!',
+                'data_user' => $user,
+            ], 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'statusCode' => 500,
+                'message' => 'An error occurred while processing your request.',
+                'data_user' => ['error' => $th->getMessage()]
+            ], 500);
+        }
+    }
 }
