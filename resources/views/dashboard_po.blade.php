@@ -123,7 +123,6 @@
                                             <th>Jumlah Kursi</th>
                                             <th>Nomor Plat</th>
                                             <th>Kelas</th>
-                                            <th>Informasi</th>
                                             <th>Sopir</th>
                                             <th>Kondektur</th>
                                             <th>Aksi</th>

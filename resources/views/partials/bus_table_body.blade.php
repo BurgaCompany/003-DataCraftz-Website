@@ -9,19 +9,18 @@
             <td>{{ $bus->name }}</td>
             <td>
                 @if ($bus->status == 'Belum Berangkat')
-                    <span class="badge badge-primary">Belum Berangkat</span>
+                    <span class="badge badge-warning">Belum Berangkat</span>
                 @elseif ($bus->status == 'Berangkat')
-                    <span class="badge badge-success">Berangkat</span>
+                    <span class="badge badge-info">Berangkat</span>
                 @elseif ($bus->status == 'Terkendala')
                     <span class="badge badge-danger">Terkendala</span>
                 @elseif ($bus->status == 'Selesai')
-                    <span class="badge badge-info">Selesai</span>
+                    <span class="badge badge-success">Selesai</span>
                 @endif
             </td>
             <td>{{ $bus->chair }}</td>
             <td>{{ preg_replace('/([a-zA-Z])([0-9]+)/', '$1 $2 ', $bus->license_plate_number) }}</td>
             <td>{{ $bus->class }}</td>
-            <td>{{ $bus->information ?: '-' }}</td>
             <td>{{ $bus->driver_name ?: '-' }}</td>
             <td>{{ $bus->conductor_name ?: '-' }}</td>
             <td>
