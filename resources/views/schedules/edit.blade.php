@@ -110,11 +110,12 @@
                                                 <div class="input-group">
                                                     <input type="number" class="form-control" name="price" id="price"
                                                         placeholder="Penentuan Harga" required
-                                                        value="{{ old('price', $schedules->price) }}"
-                                                        {{ !Auth::user()->has('PO') ? '' : 'disabled' }} </div>
+                                                        value="{{ old('price', $schedules->price) }}
+                                                        {{ !Auth::user()->hasRole('PO') ? '' : 'disabled' }} ">
                                                 </div>
                                             </div>
                                         </div>
+                                    </div>
                                         <div class="row">
                                             <div class="col-md-6">
                                                 <div class="form-group">
