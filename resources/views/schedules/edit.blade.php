@@ -106,16 +106,17 @@
                                     <div class="row">
                                         <div class="col-md-12">
                                             <div class="form-group">
-                                                <div class="input-group">
-                                                    @if (Auth::user()->hasRole('PO'))
-                                                        <label for="price">Penentuan Harga</label>
+                                                @if (Auth::user()->hasRole('PO'))
+                                                    <label for="price">Penentuan Harga</label>
+                                                    <div class="input-group">
                                                         <input type="number" class="form-control" name="price" id="price" placeholder="Penentuan Harga" required value="{{ old('price', $schedules->price) }}">
-                                                    @else
-                                                        <input type="number" class="form-control" name="price" id="price" placeholder="Penentuan Harga" value="{{ old('price', $schedules->price) }}" hidden>
-                                                    @endif
-                                                </div>
+                                                    </div>
+                                                @else
+                                                    <input type="hidden" name="price" value="{{ old('price', $schedules->price) }}">
+                                                @endif
                                             </div>
                                         </div>
+                                        
                                     </div>
                                         <div class="row">
                                             <div class="col-md-6">
